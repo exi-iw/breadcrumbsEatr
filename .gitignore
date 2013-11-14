@@ -1,7 +1,8 @@
 node_modules
+assets/js/site.js
 assets/css/site.css
-assets/css/responsive.breadcrumbs.css
 assets/js/responsive.breadcrumbs.js
+assets/css/responsive.breadcrumbs.css
 
 
 ## ----------------
