@@ -9,5 +9,11 @@
     mainContainer = $ '#main-container'
     mainContent   = $ '#main-content'
 
+    ($ '#basic-usage')
+        .find('.breadcrumb')
+        .responsiveBreadcrumbs
+            onLoad: ->
+                console.log 'loaded'
+
     # always return null
     return null
