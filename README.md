@@ -1,2 +1,2 @@
-responsive-breadcrumbs
+Responsive Breadcrumbs
 ======================
