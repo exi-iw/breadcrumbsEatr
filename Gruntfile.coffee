@@ -7,18 +7,20 @@ module.exports = (grunt) ->
             common:
                 files:
                     'assets/js/responsive.breadcrumbs.js': 'src/coffee/responsive.breadcrumbs.coffee'
+                    'assets/js/site.js': 'src/coffee/site.coffee'
                 options:
                     bare: true
         less:
             common:
                 files:
-                    'assets/js/responsive.breadcrumbs.css': 'src/less/responsive.breadcrumbs.less'
+                    'assets/css/site.css': 'src/less/site.less'
+                    'assets/css/responsive.breadcrumbs.css': 'src/less/responsive.breadcrumbs.less'
         watch:
             coffee:
                 files: ['src/coffee/responsive.breadcrumbs.coffee']
                 tasks: ['coffee']
             less:
-                files: ['src/less/responsive.breadcrumbs.less']
+                files: ['src/less/site.less', 'src/less/responsive.breadcrumbs.less']
                 tasks: ['less']
 
     # Load the plugin that provides the "coffee", "less", "watch" task.
