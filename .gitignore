@@ -1,4 +1,6 @@
 node_modules
+assets/compiled/*
+!assets/compiled/.gitkeep
 assets/js/site.js
 assets/css/site.css
 assets/js/responsive.breadcrumbs.js
