@@ -1,0 +1,14 @@
+{
+  "name": "responsive-breadcrumbs",
+  "version": "0.1.0",
+  "author": "Exequiel Ceasar S. Navarrete <exequiel.navarrete@ninthdesign.com>",
+  "repository": {
+     "type": "git",
+     "url": "https://github.com/exi-iw/responsive-breadcrumbs.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}
