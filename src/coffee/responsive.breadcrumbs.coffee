@@ -1,3 +1,8 @@
+###
+ * Responsive Breadcrumbs - Turns breadcrumbs into a responsive one
+ * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete09@gmail.com>
+ * Licensed under MIT
+### 
 (($, window, document, undefined_) ->
     "use strict"
 
