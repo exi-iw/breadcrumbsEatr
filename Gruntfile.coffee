@@ -6,18 +6,25 @@ module.exports = (grunt) ->
         coffee:
             common:
                 files:
-                    'public/lib/js/common.js': 'public/lib/js/coffee/common.coffee'
+                    'assets/js/responsive.breadcrumbs.js': 'src/coffee/responsive.breadcrumbs.coffee'
                 options:
                     bare: true
-        watch:
+        less:
             common:
-                files: ['public/lib/js/coffee/common.coffee']
+                files:
+                    'assets/js/responsive.breadcrumbs.css': 'src/less/responsive.breadcrumbs.less'
+        watch:
+            coffee:
+                files: ['src/coffee/responsive.breadcrumbs.coffee']
                 tasks: ['coffee']
+            less:
+                files: ['src/less/responsive.breadcrumbs.less']
+                tasks: ['less']
 
-    # Load the plugin that provides the "coffee" task.
+    # Load the plugin that provides the "coffee", "less", "watch" task.
     grunt.loadNpmTasks 'grunt-contrib-coffee'
+    grunt.loadNpmTasks 'grunt-contrib-less'
     grunt.loadNpmTasks 'grunt-contrib-watch'
-    grunt.loadNpmTasks 'grunt-devtools'
 
     # Default Tasks
     grunt.registerTask 'default', ['coffee']
