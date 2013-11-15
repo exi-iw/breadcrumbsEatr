@@ -96,9 +96,11 @@
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
             # plugin keys ::start
-            # generate random key for resize event to prevent event namespace conflicts
-            o.resizeKey = "resize.#{ pluginName }_#{ o.generateRandomKey() }"
+            o.pluginKey = o.generateRandomKey()
             o.stateKey  = "#{ pluginName.toLowerCase() }-state"
+
+            # generate random key for resize event to prevent event namespace conflicts
+            o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
             # plugin keys ::end
 
             # add the wrapper class to the element
