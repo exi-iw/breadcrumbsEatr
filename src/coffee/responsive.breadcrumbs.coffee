@@ -9,6 +9,7 @@
     pluginName = 'responsiveBreadcrumbs'
     defaults =
         allowance:              10
+        compressOnWidth:        null
         compressed:
             wrapperClass: "#{ pluginName.toLowerCase() }-compressed-wrapper"
             beforeOpen:   (obj) ->
@@ -21,6 +22,9 @@
         enhanceAnimation:       true
         exposeItems:            false
         fixIEResize:            false
+        holder:
+            class: "#{ pluginName.toLowerCase() }-holder"
+            text:  '...'
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
@@ -38,44 +42,46 @@
         o        = ($ el).data '_obj', {}
         _this    = this
         metadata = ($ el).data "#{ pluginName.toLowerCase() }-options"
+        stateKey = "#{ pluginName.toLowerCase() }-state"
 
-        resize =
-            main: (e) ->
-                current      = $ this
-                optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
+        o.resize = (e) ->
+            current      = $ this
+            optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
 
-                crumbHeights = o.el
-                    .children('li')
-                    .map( ->
-                        return ($ this).outerHeight true
-                    )
-                    .get()
+            crumbHeights = o.el
+                .children('li')
+                .map( ->
+                    return ($ this).outerHeight true
+                )
+                .get()
 
-                optimalCrumbHeight = _.max crumbHeights
+            optimalCrumbHeight = _.max crumbHeights
 
-                if typeof optimalWidth is "undefined"
-                    if optimalCrumbHeight isnt o.el.height()
-                        o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+            if typeof optimalWidth is "undefined"
+                if optimalCrumbHeight isnt o.el.height()
+                    o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
-                        o.el
-                            .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
-                            .addClass(o.opts.wrappedClass)
-                            .trigger "compress.#{ pluginName }"
-                else
-                    if current.width() >= optimalWidth
+                    o.el
+                        .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
+            else
+                if current.width() >= optimalWidth
+                    if _this.isCompressed()
                         o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
 
                         o.el
                             .removeClass(o.opts.wrappedClass)
                             .trigger "decompress.#{ pluginName }"
-                    else
+                else
+                    if not _this.isCompressed()
                         o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
                         o.el
                             .addClass(o.opts.wrappedClass)
                             .trigger "compress.#{ pluginName }"
 
-                return null
+            return null
 
         o.debug = ->
             # Skip browsers w/o firebug or console
@@ -123,8 +129,9 @@
             o.opts.onBeforeLoad(_this) if $.isFunction(o.opts.onBeforeLoad)
 
             # Initialize
-            o.el = $(el)
-            o.cloneEl = o.el.clone() # Reference to the old untouched element
+            o.el            = $ el
+            o.cloneEl       = o.el.clone() # Reference to the old untouched element
+            o.browserWindow = $ window
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
@@ -135,34 +142,76 @@
                 _.each resize, (v, i) ->
                     resize[i] = _.debounce(v, o.opts.debounceTime) if $.isFunction(v)
 
-            o.el.data "#{ pluginName.toLowerCase() }-state", 'decompressed'
+            o.el.data stateKey, 'decompressed'
 
+            # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
-                state   = current.data "#{ pluginName.toLowerCase() }-state"
 
-                current.data "#{ pluginName.toLowerCase() }-state", 'compressed'
+                items = current.children 'li'
+
+                current.data stateKey, 'compressed'
+
+                # slice the items beginning to the second element up to the second to the last element
+                hiddenItems = items
+                    .slice(1, (items.length - 1))
+                    .detach()
+
+                holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+
+                o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
+
+                holder
+                    .children('ul')
+                    .hide()
+                    .append hiddenItems
+
+                # delete the reference since it does not correctly point it anymore to the hidden elements
+                hiddenItems = null
 
                 o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
-                console.log 'compressed'
-
+            # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current = $ this
-                state   = current.data "#{ pluginName.toLowerCase() }-state"
 
-                current.data "#{ pluginName.toLowerCase() }-state", 'decompressed'
+                current.data stateKey, 'decompressed'
+
+                holder = current.find ".#{ o.opts.holder.class }"
+
+                hiddenItems = holder
+                    .find("ul li")
+                    .detach()
+
+                holder.remove()
+
+                o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
+
+                current
+                    .find('li')
+                    .filter(':first-child')
+                    .after hiddenItems
+
+                # delete the reference since the holder element have been remove already
+                holder = null
 
                 o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-                console.log 'decompressed'
-
-            ($ window)
-                .on("resize.#{ pluginName }", resize.main)
-                .trigger "resize.#{ pluginName }"
+            o.browserWindow.on "resize.#{ pluginName }", o.resize
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
+
+            # trigger the resize event after the plugin has loaded
+            o.browserWindow.trigger "resize.#{ pluginName }"
+
+        _this.getState = ->
+            state = o.el.data stateKey
+
+            return if typeof state is "undefined" then 'decompressed' else state
+
+        _this.isCompressed = ->
+            return if _this.getState() is 'compressed' then true else false
 
         _this.destroy = ->
             o.opts.onDestroy(_this) if $.isFunction(o.opts.onDestroy)
