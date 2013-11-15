@@ -9,7 +9,7 @@
     pluginName = 'responsiveBreadcrumbs'
     defaults =
         allowance:              10
-        compressOnWidth:        null
+        compressAllAtOnce:      false
         compressed:
             wrapperClass: "#{ pluginName.toLowerCase() }-compressed-wrapper"
             beforeOpen:   (obj) ->
