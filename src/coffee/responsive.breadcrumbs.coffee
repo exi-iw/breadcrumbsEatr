@@ -44,45 +44,44 @@
         metadata = ($ el).data "#{ pluginName.toLowerCase() }-options"
         stateKey = "#{ pluginName.toLowerCase() }-state"
 
-        resize =
-            main: (e) ->
-                current      = $ this
-                optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
+        o.resize = (e) ->
+            current      = $ this
+            optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
 
-                crumbHeights = o.el
-                    .children('li')
-                    .map( ->
-                        return ($ this).outerHeight true
-                    )
-                    .get()
+            crumbHeights = o.el
+                .children('li')
+                .map( ->
+                    return ($ this).outerHeight true
+                )
+                .get()
 
-                optimalCrumbHeight = _.max crumbHeights
+            optimalCrumbHeight = _.max crumbHeights
 
-                if typeof optimalWidth is "undefined"
-                    if optimalCrumbHeight isnt o.el.height()
+            if typeof optimalWidth is "undefined"
+                if optimalCrumbHeight isnt o.el.height()
+                    o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+
+                    o.el
+                        .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
+            else
+                if current.width() >= optimalWidth
+                    if _this.isCompressed()
+                        o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
+
+                        o.el
+                            .removeClass(o.opts.wrappedClass)
+                            .trigger "decompress.#{ pluginName }"
+                else
+                    if not _this.isCompressed()
                         o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
                         o.el
-                            .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
                             .addClass(o.opts.wrappedClass)
                             .trigger "compress.#{ pluginName }"
-                else
-                    if current.width() >= optimalWidth
-                        if _this.isCompressed()
-                            o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
 
-                            o.el
-                                .removeClass(o.opts.wrappedClass)
-                                .trigger "decompress.#{ pluginName }"
-                    else
-                        if not _this.isCompressed()
-                            o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
-
-                            o.el
-                                .addClass(o.opts.wrappedClass)
-                                .trigger "compress.#{ pluginName }"
-
-                return null
+            return null
 
         o.debug = ->
             # Skip browsers w/o firebug or console
@@ -200,7 +199,7 @@
 
                 console.log 'decompress'
 
-            o.browserWindow.on "resize.#{ pluginName }", resize.main
+            o.browserWindow.on "resize.#{ pluginName }", o.resize
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
