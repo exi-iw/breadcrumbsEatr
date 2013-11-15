@@ -44,45 +44,6 @@
         metadata = ($ el).data "#{ pluginName.toLowerCase() }-options"
         stateKey = "#{ pluginName.toLowerCase() }-state"
 
-        o.resize = (e) ->
-            current      = $ this
-            optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
-
-            crumbHeights = o.el
-                .children('li')
-                .map( ->
-                    return ($ this).outerHeight true
-                )
-                .get()
-
-            optimalCrumbHeight = _.max crumbHeights
-
-            if typeof optimalWidth is "undefined"
-                if optimalCrumbHeight isnt o.el.height()
-                    o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
-
-                    o.el
-                        .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
-                        .addClass(o.opts.wrappedClass)
-                        .trigger "compress.#{ pluginName }"
-            else
-                if current.width() >= optimalWidth
-                    if _this.isCompressed()
-                        o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
-
-                        o.el
-                            .removeClass(o.opts.wrappedClass)
-                            .trigger "decompress.#{ pluginName }"
-                else
-                    if not _this.isCompressed()
-                        o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
-
-                        o.el
-                            .addClass(o.opts.wrappedClass)
-                            .trigger "compress.#{ pluginName }"
-
-            return null
-
         o.debug = ->
             # Skip browsers w/o firebug or console
             if console and $.isFunction(console.log)
@@ -204,6 +165,45 @@
 
             # trigger the resize event after the plugin has loaded
             o.browserWindow.trigger "resize.#{ pluginName }"
+
+        o.resize = (e) ->
+            current      = $ this
+            optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
+
+            crumbHeights = o.el
+                .children('li')
+                .map( ->
+                    return ($ this).outerHeight true
+                )
+                .get()
+
+            optimalCrumbHeight = _.max crumbHeights
+
+            if typeof optimalWidth is "undefined"
+                if optimalCrumbHeight isnt o.el.height()
+                    o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+
+                    o.el
+                        .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
+            else
+                if current.width() >= optimalWidth
+                    if _this.isCompressed()
+                        o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
+
+                        o.el
+                            .removeClass(o.opts.wrappedClass)
+                            .trigger "decompress.#{ pluginName }"
+                else
+                    if not _this.isCompressed()
+                        o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+
+                        o.el
+                            .addClass(o.opts.wrappedClass)
+                            .trigger "compress.#{ pluginName }"
+
+            return null
 
         _this.getState = ->
             state = o.el.data stateKey
