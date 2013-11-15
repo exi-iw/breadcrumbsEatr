@@ -170,8 +170,6 @@
 
                 o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
-                console.log 'compress'
-
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current = $ this
 
@@ -196,8 +194,6 @@
                 holder = null
 
                 o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
-
-                console.log 'decompress'
 
             o.browserWindow.on "resize.#{ pluginName }", o.resize
 
