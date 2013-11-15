@@ -39,10 +39,11 @@
         onDestroy:              (obj) ->
 
     ResponsiveBreadcrumbs = (el, options) ->
-        o        = ($ el).data '_obj', {}
-        _this    = this
-        metadata = ($ el).data "#{ pluginName.toLowerCase() }-options"
-        stateKey = "#{ pluginName.toLowerCase() }-state"
+        o         = ($ el).data '_obj', {}
+        _this     = this
+        metadata  = ($ el).data "#{ pluginName.toLowerCase() }-options"
+        stateKey  = "#{ pluginName.toLowerCase() }-state"
+        resizeKey = "resize.#{ pluginName }"
 
         o.debug = ->
             # Skip browsers w/o firebug or console
@@ -158,13 +159,13 @@
 
                 o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-            o.browserWindow.on "resize.#{ pluginName }", o.resize
+            o.browserWindow.on resizeKey, o.resize
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
             # trigger the resize event after the plugin has loaded
-            o.browserWindow.trigger "resize.#{ pluginName }"
+            o.browserWindow.trigger resizeKey
 
         o.resize = (e) ->
             current      = $ this
