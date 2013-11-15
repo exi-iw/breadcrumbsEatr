@@ -26,9 +26,9 @@
         onBeforeCompress:       (obj) ->
         onCompress:             (obj) ->
         onAfterCompress:        (obj) ->
-        onBeforeShowCompressed: (obj) ->
-        onShowCompressed:       (obj) ->
-        onAfterShowCompressed:  (obj) ->
+        onBeforeDecompress:     (obj) ->
+        onDecompress:           (obj) ->
+        onAfterDecompress:      (obj) ->
         onBeforeLoad:           (obj) ->
         onLoad:                 (obj) ->
         onAfterLoad:            (obj) ->
@@ -55,16 +55,25 @@
 
                 if typeof optimalWidth is "undefined"
                     if optimalCrumbHeight isnt o.el.height()
+                        o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+
                         o.el
                             .data("#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance))
-                            .addClass o.opts.wrappedClass
+                            .addClass(o.opts.wrappedClass)
+                            .trigger "compress.#{ pluginName }"
                 else
                     if current.width() >= optimalWidth
-                        console.log 'remove'
-                        o.el.removeClass o.opts.wrappedClass
+                        o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
+
+                        o.el
+                            .removeClass(o.opts.wrappedClass)
+                            .trigger "decompress.#{ pluginName }"
                     else
-                        console.log 'add'
-                        o.el.addClass o.opts.wrappedClass
+                        o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+
+                        o.el
+                            .addClass(o.opts.wrappedClass)
+                            .trigger "compress.#{ pluginName }"
 
                 return null
 
@@ -125,6 +134,28 @@
             if o.opts.fixIEResize
                 _.each resize, (v, i) ->
                     resize[i] = _.debounce(v, o.opts.debounceTime) if $.isFunction(v)
+
+            o.el.data "#{ pluginName.toLowerCase() }-state", 'decompressed'
+
+            o.el.on "compress.#{ pluginName }", (e) ->
+                current = $ this
+                state   = current.data "#{ pluginName.toLowerCase() }-state"
+
+                current.data "#{ pluginName.toLowerCase() }-state", 'compressed'
+
+                o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
+
+                console.log 'compressed'
+
+            o.el.on "decompress.#{ pluginName }", (e) ->
+                current = $ this
+                state   = current.data "#{ pluginName.toLowerCase() }-state"
+
+                current.data "#{ pluginName.toLowerCase() }-state", 'decompressed'
+
+                o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
+
+                console.log 'decompressed'
 
             ($ window)
                 .on("resize.#{ pluginName }", resize.main)
