@@ -144,6 +144,7 @@
 
             o.el.data stateKey, 'decompressed'
 
+            # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
 
@@ -170,6 +171,7 @@
 
                 o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
+            # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current = $ this
 
