@@ -9,6 +9,7 @@
     pluginName = 'responsiveBreadcrumbs'
     defaults =
         allowance:              10
+        compressOnWidth:        null
         compressed:
             wrapperClass: "#{ pluginName.toLowerCase() }-compressed-wrapper"
             beforeOpen:   (obj) ->
@@ -38,6 +39,7 @@
         o        = ($ el).data '_obj', {}
         _this    = this
         metadata = ($ el).data "#{ pluginName.toLowerCase() }-options"
+        stateKey = "#{ pluginName.toLowerCase() }-state"
 
         resize =
             main: (e) ->
@@ -135,27 +137,29 @@
                 _.each resize, (v, i) ->
                     resize[i] = _.debounce(v, o.opts.debounceTime) if $.isFunction(v)
 
-            o.el.data "#{ pluginName.toLowerCase() }-state", 'decompressed'
+            o.el.data stateKey, 'decompressed'
 
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
-                state   = current.data "#{ pluginName.toLowerCase() }-state"
 
-                current.data "#{ pluginName.toLowerCase() }-state", 'compressed'
+                current.data(stateKey, 'compressed') if not _this.isCompressed()
+
+                # set the compression logic here
 
                 o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
-                console.log 'compressed'
+                console.log _this.getState()
 
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current = $ this
-                state   = current.data "#{ pluginName.toLowerCase() }-state"
 
-                current.data "#{ pluginName.toLowerCase() }-state", 'decompressed'
+                current.data(stateKey, 'decompressed') if _this.isCompressed()
+
+                # set the decompression logic here
 
                 o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-                console.log 'decompressed'
+                console.log _this.getState()
 
             ($ window)
                 .on("resize.#{ pluginName }", resize.main)
@@ -163,6 +167,14 @@
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
+
+        _this.getState = ->
+            state = o.el.data stateKey
+
+            return if typeof state is "undefined" then 'decompressed' else state
+
+        _this.isCompressed = ->
+            return if _this.getState() is 'compressed' then true else false
 
         _this.destroy = ->
             o.opts.onDestroy(_this) if $.isFunction(o.opts.onDestroy)
