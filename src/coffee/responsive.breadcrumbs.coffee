@@ -71,12 +71,12 @@
         o.debug = ->
             # Skip browsers w/o firebug or console
             if console and $.isFunction(console.log)
-                return false if arguments_.length < 1
+                return false if arguments.length < 1
 
                 args = []
 
-                for n of arguments_
-                    args.push arguments_[n]
+                for n of arguments
+                    args.push arguments[n]
                     args.push " >> "
 
                 args.push(o.el) if args.length is 1
@@ -87,12 +87,12 @@
         o.error = ->
             # Skip browsers w/o firebug or console
             if console and $.isFunction(console.log)
-                return false if arguments_.length < 1
+                return false if arguments.length < 1
 
                 args = []
 
-                for n of arguments_
-                    args.push arguments_[n] + (" >> ")
+                for n of arguments
+                    args.push arguments[n] + (" >> ")
 
                 args.push(o.el) if args.length is 1
                 args.push "[#{ pluginName }]"
@@ -101,9 +101,8 @@
 
         # Initialize Properties and States Plugin
         o.init = ->
-
             # check if underscore.js is required.
-            if not window._
+            if typeof window._ is "undefined"
                 o.error 'underscore.js is required.'
 
                 return false
