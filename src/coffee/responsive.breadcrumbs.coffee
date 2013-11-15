@@ -42,8 +42,6 @@
         o         = ($ el).data '_obj', {}
         _this     = this
         metadata  = ($ el).data "#{ pluginName.toLowerCase() }-options"
-        stateKey  = "#{ pluginName.toLowerCase() }-state"
-        resizeKey = "resize.#{ pluginName }"
 
         o.debug = ->
             # Skip browsers w/o firebug or console
@@ -97,14 +95,18 @@
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
+            # plugin keys ::start
+            # generate random key for resize event to prevent event namespace conflicts
+            o.resizeKey = "resize.#{ pluginName }_#{ o.generateRandomKey() }"
+            o.stateKey  = "#{ pluginName.toLowerCase() }-state"
+            # plugin keys ::end
+
             # add the wrapper class to the element
             o.el.addClass o.opts.wrapperClass
 
-            if o.opts.fixIEResize
-                _.each resize, (v, i) ->
-                    resize[i] = _.debounce(v, o.opts.debounceTime) if $.isFunction(v)
+            o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
-            o.el.data stateKey, 'decompressed'
+            o.el.data o.stateKey, 'decompressed'
 
             # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
@@ -112,7 +114,7 @@
 
                 items = current.children 'li'
 
-                current.data stateKey, 'compressed'
+                current.data o.stateKey, 'compressed'
 
                 # slice the items beginning to the second element up to the second to the last element
                 hiddenItems = items
@@ -137,7 +139,7 @@
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current = $ this
 
-                current.data stateKey, 'decompressed'
+                current.data o.stateKey, 'decompressed'
 
                 holder = current.find ".#{ o.opts.holder.class }"
 
@@ -159,13 +161,13 @@
 
                 o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-            o.browserWindow.on resizeKey, o.resize
+            o.browserWindow.on o.resizeKey, o.resize
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
             # trigger the resize event after the plugin has loaded
-            o.browserWindow.trigger resizeKey
+            o.browserWindow.trigger o.resizeKey
 
         o.resize = (e) ->
             current      = $ this
@@ -207,8 +209,14 @@
                 .removeClass(o.opts.wrappedClass)
                 .trigger "decompress.#{ pluginName }"
 
+        o.generateRandomKey = ->
+            Math
+                .random()
+                .toString(36)
+                .substring 7
+
         _this.getState = ->
-            state = o.el.data stateKey
+            state = o.el.data o.stateKey
 
             return if typeof state is "undefined" then 'decompressed' else state
 
