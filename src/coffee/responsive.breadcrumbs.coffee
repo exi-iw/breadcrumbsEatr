@@ -113,17 +113,23 @@
             # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
+                items   = current.children 'li'
+                holder  = items.filter ".#{ o.opts.holder.class }"
 
-                items = current.children 'li'
-
+                # set the state to compressed
                 current.data o.stateKey, 'compressed'
 
                 # slice the items beginning to the second element up to the second to the last element
-                hiddenItems = items
-                    .slice(1, (items.length - 1))
-                    .detach()
+                if holder.length is 0
+                    hiddenItems = items
+                        .eq(1)
+                        .detach()
 
-                holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+                else
+                    hiddenItems = items
+                        .eq(2)
+                        .detach()
 
                 o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
 
@@ -138,30 +144,34 @@
                 o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
             # bind the element to a custom event named decompress
-            o.el.on "decompress.#{ pluginName }", (e) ->
-                current = $ this
+            # o.el.on "decompress.#{ pluginName }", (e) ->
+            #     current     = $ this
+            #     holder      = current.find ".#{ o.opts.holder.class }"
+            #     hiddenItems = holder.find 'ul > li'
 
-                current.data o.stateKey, 'decompressed'
+            #     # set the state to decompressed
+            #     current.data o.stateKey, 'decompressed'
 
-                holder = current.find ".#{ o.opts.holder.class }"
+            #     if holder.length > 0
+            #         console.log 'remove some items'
 
-                hiddenItems = holder
-                    .find("ul li")
-                    .detach()
+            #     # hiddenItems = holder
+            #     #     .find("ul li")
+            #     #     .detach()
 
-                holder.remove()
+            #     # holder.remove()
 
-                o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
+            #     o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
 
-                current
-                    .find('li')
-                    .filter(':first-child')
-                    .after hiddenItems
+            #     # current
+            #     #     .find('li')
+            #     #     .filter(':first-child')
+            #     #     .after hiddenItems
 
-                # delete the reference since the holder element have been remove already
-                holder = null
+            #     # delete the reference since the holder element have been remove already
+            #     holder = null
 
-                o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
+            #     o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             o.browserWindow.on o.resizeKey, o.resize
 
@@ -173,7 +183,7 @@
 
         o.resize = (e) ->
             current      = $ this
-            optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
+            # optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
 
             crumbHeights = o.el
                 .children('li')
@@ -184,16 +194,21 @@
 
             optimalCrumbHeight = _.max crumbHeights
 
-            if typeof optimalWidth is "undefined"
-                if optimalCrumbHeight isnt o.el.height()
-                    o.el.data "#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance)
-
-                    o.compress()
+            if optimalCrumbHeight isnt o.el.height()
+                o.compress()
             else
-                if current.width() >= optimalWidth
-                    o.decompress() if _this.isCompressed()
-                else
-                    o.compress() unless _this.isCompressed()
+                console.log 'must be decompressed'
+
+            # if typeof optimalWidth is "undefined"
+            #     if optimalCrumbHeight isnt o.el.height()
+            #         o.el.data "#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance)
+
+            #         o.compress()
+            # else
+            #     if current.width() >= optimalWidth
+            #         o.decompress() if _this.isCompressed()
+            #     else
+            #         o.compress() unless _this.isCompressed()
 
             return null
 
