@@ -181,8 +181,7 @@
                 hiddenItems = holder.find 'ul > li'
 
                 if hiddenItems.length > 0
-                    hiddenItems = $ hiddenItems.get().reverse()
-
+                    hiddenItems  = $ hiddenItems.get().reverse()
                     releaseItems = []
 
                     hiddenItems.each ->
@@ -191,18 +190,23 @@
 
                         if typeof width isnt "undefined" and (o.getChildrenWidth() + width) <= current.width()
                             releaseItems.unshift(crumb.detach().get(0))
-                        else
-                            return false
+
+                        return false
 
                     if releaseItems.length > 0
+                        # trigger first the beforeDecompress callback
                         o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
 
+                        # trigger onDecompress callback
                         o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
 
+                        # append the released items after the holder
                         holder.after ($ releaseItems)
 
+                        # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
+                        # remove the holder if there is no more item left.
                         if holder.find('ul > li').length is 0
                             holder.remove()
 
@@ -229,27 +233,24 @@
 
             o.optimalCrumbHeight = _.max crumbHeights
 
-            o.compress() if o.optimalCrumbHeight isnt o.el.height()
+            if o.optimalCrumbHeight isnt o.el.height()
+                o.el
+                    .addClass(o.opts.wrappedClass)
+                    .trigger "compress.#{ pluginName }"
 
             if o.windowWidth isnt o.browserWindow.width()
                 if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
-                    o.compress()
+                    o.el
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
                 else
-                    o.decompress()
+                    o.el
+                        .removeClass(o.opts.wrappedClass)
+                        .trigger "decompress.#{ pluginName }"
 
                 o.windowWidth = o.browserWindow.width()
 
             return null
-
-        o.compress = ->
-            o.el
-                .addClass(o.opts.wrappedClass)
-                .trigger "compress.#{ pluginName }"
-
-        o.decompress = ->
-            o.el
-                .removeClass(o.opts.wrappedClass)
-                .trigger "decompress.#{ pluginName }"
 
         o.getChildrenWidth = ->
             totalWidth = 0
