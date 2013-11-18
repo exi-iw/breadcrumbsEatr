@@ -206,8 +206,11 @@
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
+                        # query again the dom and store it again in a variable
+                        hiddenItems = holder.find 'ul > li'
+
                         # remove the holder if there is no more item left.
-                        if holder.find('ul > li').length is 0
+                        if hiddenItems.length is 0
                             holder.remove()
 
                             # delete the reference since the holder element have been remove already
