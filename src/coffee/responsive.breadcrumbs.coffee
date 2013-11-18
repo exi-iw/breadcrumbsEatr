@@ -110,7 +110,13 @@
                 .each ->
                     current = $ this
 
-                    current.data "#{ pluginName.toLowerCase() }-width", current.outerWidth(true)
+                    # set the elements float left and display inline-block and store the width to the element
+                    current
+                        .css(
+                             float: 'left',
+                             display: 'inline-block'
+                        )
+                        .data "#{ pluginName.toLowerCase() }-width", current.outerWidth(true)
             # set the widths of each elements ::end
 
             # add the wrapper class to the element
@@ -131,6 +137,11 @@
 
                 if holder.length is 0
                     holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+
+                    # set the holder's css to float left and display inline-block
+                    holder.css
+                        float: 'left',
+                        display: 'inline-block'
 
                 # initialize an array for storage of the hidden items
                 hiddenItems = []
@@ -160,34 +171,34 @@
                 o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
             # bind the element to a custom event named decompress
-            # o.el.on "decompress.#{ pluginName }", (e) ->
-            #     current     = $ this
-            #     holder      = current.find ".#{ o.opts.holder.class }"
-            #     hiddenItems = holder.find 'ul > li'
+            o.el.on "decompress.#{ pluginName }", (e) ->
+                current     = $ this
+                holder      = current.find ".#{ o.opts.holder.class }"
+                hiddenItems = holder.find 'ul > li'
 
-            #     # set the state to decompressed
-            #     current.data o.stateKey, 'decompressed'
+                # set the state to decompressed
+                current.data o.stateKey, 'decompressed'
 
-            #     if holder.length > 0
-            #         console.log 'remove some items'
+                if hiddenItems.length > 0
+                    hiddenItems = $ hiddenItems.get().reverse()
 
-            #     # hiddenItems = holder
-            #     #     .find("ul li")
-            #     #     .detach()
+                    hiddenItems.each ->
+                        crumb = $ this
+                        width = crumb.data "#{ pluginName.toLowerCase() }-width"
 
-            #     # holder.remove()
+                        if typeof width isnt "undefined" and (o.getChildrenWidth() + width) <= current.width()
+                            holder.after crumb.detach()
+                        else
+                            return false
 
-            #     o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
+                holder.remove() if hiddenItems.length is 0
 
-            #     # current
-            #     #     .find('li')
-            #     #     .filter(':first-child')
-            #     #     .after hiddenItems
+                o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
 
-            #     # delete the reference since the holder element have been remove already
-            #     holder = null
+                # delete the reference since the holder element have been remove already
+                holder = null
 
-            #     o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
+                o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             o.browserWindow.on o.resizeKey, o.resize
 
@@ -219,6 +230,8 @@
                     o.compress()
                 else
                     console.log 'increasing'
+
+                    o.decompress()
 
                 o.windowWidth = o.browserWindow.width()
 
@@ -253,6 +266,16 @@
             o.el
                 .removeClass(o.opts.wrappedClass)
                 .trigger "decompress.#{ pluginName }"
+
+        o.getChildrenWidth = ->
+            totalWidth = 0
+
+            o.el
+                .children()
+                .each ->
+                    totalWidth += ($ this).width()
+
+            return totalWidth
 
         o.generateRandomKey = ->
             Math
