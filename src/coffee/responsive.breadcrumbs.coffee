@@ -98,7 +98,6 @@
 
             # plugin keys ::start
             o.pluginKey = o.generateRandomKey()
-            o.stateKey  = "#{ pluginName.toLowerCase() }-state"
 
             # generate random key for resize event to prevent event namespace conflicts
             o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
@@ -124,16 +123,11 @@
 
             o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
-            o.el.data o.stateKey, 'decompressed'
-
             # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
                 items   = current.children 'li'
                 holder  = items.filter ".#{ o.opts.holder.class }"
-
-                # set the state to compressed
-                current.data o.stateKey, 'compressed'
 
                 if holder.length is 0
                     holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
@@ -175,9 +169,6 @@
                 current     = $ this
                 holder      = current.find ".#{ o.opts.holder.class }"
                 hiddenItems = holder.find 'ul > li'
-
-                # set the state to decompressed
-                current.data o.stateKey, 'decompressed'
 
                 if hiddenItems.length > 0
                     hiddenItems = $ hiddenItems.get().reverse()
@@ -225,12 +216,8 @@
 
             if o.windowWidth isnt o.browserWindow.width()
                 if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
-                    console.log 'decreasing'
-
                     o.compress()
                 else
-                    console.log 'increasing'
-
                     o.decompress()
 
                 o.windowWidth = o.browserWindow.width()
@@ -282,11 +269,6 @@
                 .random()
                 .toString(36)
                 .substring 7
-
-        _this.getState = ->
-            state = o.el.data o.stateKey
-
-            return if typeof state is "undefined" then 'decompressed' else state
 
         _this.isCompressed = ->
             return if _this.getState() is 'compressed' then true else false
