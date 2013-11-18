@@ -181,17 +181,20 @@
                 hiddenItems = holder.find 'ul > li'
 
                 if hiddenItems.length > 0
-                    hiddenItems  = $ hiddenItems.get().reverse()
-                    releaseItems = []
+                    hiddenItems   = $ hiddenItems.get().reverse()
+                    releaseItems  = []
+                    childrenWidth = o.getChildrenWidth()
 
                     hiddenItems.each ->
                         crumb = $ this
                         width = crumb.data "#{ pluginName.toLowerCase() }-width"
 
-                        if typeof width isnt "undefined" and (o.getChildrenWidth() + width) <= current.width()
+                        if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
                             releaseItems.unshift(crumb.detach().get(0))
 
-                        return false
+                            childrenWidth += width
+                        else
+                            return false
 
                     if releaseItems.length > 0
                         # trigger first the beforeDecompress callback
