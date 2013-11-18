@@ -104,6 +104,15 @@
             o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
             # plugin keys ::end
 
+            # set the widths of each elements ::start
+            o.el
+                .children('li')
+                .each ->
+                    current = $ this
+
+                    current.data "#{ pluginName.toLowerCase() }-width", current.outerWidth(true)
+            # set the widths of each elements ::end
+
             # add the wrapper class to the element
             o.el.addClass o.opts.wrapperClass
 
