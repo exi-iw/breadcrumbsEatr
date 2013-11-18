@@ -92,6 +92,7 @@
             o.el            = $ el
             o.cloneEl       = o.el.clone() # Reference to the old untouched element
             o.browserWindow = $ window
+            o.windowWidth   = o.browserWindow.width()
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
@@ -119,17 +120,23 @@
                 # set the state to compressed
                 current.data o.stateKey, 'compressed'
 
-                # slice the items beginning to the second element up to the second to the last element
                 if holder.length is 0
-                    hiddenItems = items
-                        .eq(1)
-                        .detach()
-
                     holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
-                else
-                    hiddenItems = items
-                        .eq(2)
-                        .detach()
+
+                # initialize an array for storage of the hidden items
+                hiddenItems = []
+
+                # loop through the breadcrumb children starting from the element after the holder element until the element before the active element
+                current
+                    .children(".#{ o.opts.holder.class }")
+                    .nextUntil('.active')
+                    .each ->
+                        crumb = $ this
+
+                        hiddenItems.push(crumb.detach().get(0)) if o.optimalCrumbHeight isnt o.el.height()
+
+                        # delete the reference since it does not correctly point it anymore the element
+                        crumb = null
 
                 o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
 
@@ -192,12 +199,24 @@
                 )
                 .get()
 
-            optimalCrumbHeight = _.max crumbHeights
+            o.optimalCrumbHeight = _.max crumbHeights
 
-            if optimalCrumbHeight isnt o.el.height()
-                o.compress()
-            else
-                console.log 'must be decompressed'
+            o.compress() if o.optimalCrumbHeight isnt o.el.height()
+
+            if o.windowWidth isnt o.browserWindow.width()
+                if o.browserWindow.width() < o.windowWidth and optimalCrumbHeight isnt o.el.height()
+                    console.log 'decreasing'
+
+                    o.compress()
+                else
+                    console.log 'increasing'
+
+                o.windowWidth = o.browserWindow.width()
+
+            # if optimalCrumbHeight isnt o.el.height()
+            #     o.compress()
+            # else
+            #     console.log 'must be decompressed'
 
             # if typeof optimalWidth is "undefined"
             #     if optimalCrumbHeight isnt o.el.height()
