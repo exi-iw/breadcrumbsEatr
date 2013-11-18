@@ -204,7 +204,7 @@
             o.compress() if o.optimalCrumbHeight isnt o.el.height()
 
             if o.windowWidth isnt o.browserWindow.width()
-                if o.browserWindow.width() < o.windowWidth and optimalCrumbHeight isnt o.el.height()
+                if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
                     console.log 'decreasing'
 
                     o.compress()
