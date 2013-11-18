@@ -200,8 +200,7 @@
             o.browserWindow.trigger o.resizeKey
 
         o.resize = (e) ->
-            current      = $ this
-            # optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
+            current = $ this
 
             crumbHeights = o.el
                 .children('li')
