@@ -152,17 +152,27 @@
                         # delete the reference since it does not correctly point it anymore the element
                         crumb = null
 
-                o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
+                if hiddenItems.length > 0
+                    # trigger first the beforeCompress callback
+                    o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
-                holder
-                    .children('ul')
-                    .hide()
-                    .append hiddenItems
+                    hiddenItems = $ hiddenItems
+                    holderUl    = holder.children 'ul'
+
+                    # hide first the child ul of the holder
+                    holderUl.hide()
+
+                    # trigger onCompress callback
+                    o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
+
+                    # append the hiddenItems in the holder's child ul
+                    holderUl.append hiddenItems
+
+                    # trigger the afterCompress callback
+                    o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
                 # delete the reference since it does not correctly point it anymore to the hidden elements
                 hiddenItems = null
-
-                o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
             # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
@@ -173,23 +183,31 @@
                 if hiddenItems.length > 0
                     hiddenItems = $ hiddenItems.get().reverse()
 
+                    releaseItems = []
+
                     hiddenItems.each ->
                         crumb = $ this
                         width = crumb.data "#{ pluginName.toLowerCase() }-width"
 
                         if typeof width isnt "undefined" and (o.getChildrenWidth() + width) <= current.width()
-                            holder.after crumb.detach()
+                            releaseItems.unshift(crumb.detach().get(0))
                         else
                             return false
 
-                holder.remove() if hiddenItems.length is 0
+                    if releaseItems.length > 0
+                        o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
 
-                o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
+                        o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
 
-                # delete the reference since the holder element have been remove already
-                holder = null
+                        holder.after ($ releaseItems)
 
-                o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
+                        o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
+
+                        if holder.find('ul > li').length is 0
+                            holder.remove()
+
+                            # delete the reference since the holder element have been remove already
+                            holder = null
 
             o.browserWindow.on o.resizeKey, o.resize
 
@@ -224,15 +242,11 @@
             return null
 
         o.compress = ->
-            o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
-
             o.el
                 .addClass(o.opts.wrappedClass)
                 .trigger "compress.#{ pluginName }"
 
         o.decompress = ->
-            o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
-
             o.el
                 .removeClass(o.opts.wrappedClass)
                 .trigger "decompress.#{ pluginName }"
