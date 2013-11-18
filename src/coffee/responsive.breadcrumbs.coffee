@@ -207,9 +207,6 @@
                         # append the released items after the holder
                         holder.after ($ releaseItems)
 
-                        # trigger the afterDecompress callback
-                        o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
-
                         # query again the dom and store it again in a variable
                         hiddenItems = holder.find 'ul > li'
 
@@ -222,6 +219,9 @@
 
                             # delete the reference since the holder element have been remove already
                             holder = null
+
+                        # trigger the afterDecompress callback
+                        o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             o.browserWindow.on o.resizeKey, o.resize
 
