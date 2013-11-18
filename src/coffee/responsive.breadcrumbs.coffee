@@ -222,22 +222,6 @@
 
                 o.windowWidth = o.browserWindow.width()
 
-            # if optimalCrumbHeight isnt o.el.height()
-            #     o.compress()
-            # else
-            #     console.log 'must be decompressed'
-
-            # if typeof optimalWidth is "undefined"
-            #     if optimalCrumbHeight isnt o.el.height()
-            #         o.el.data "#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance)
-
-            #         o.compress()
-            # else
-            #     if current.width() >= optimalWidth
-            #         o.decompress() if _this.isCompressed()
-            #     else
-            #         o.compress() unless _this.isCompressed()
-
             return null
 
         o.compress = ->
