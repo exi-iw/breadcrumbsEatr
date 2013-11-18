@@ -90,9 +90,10 @@
 
             # Initialize
             o.el            = $ el
-            o.cloneEl       = o.el.clone() # Reference to the old untouched element
+            o.cloneEl       = o.el.clone()            # Reference to the old untouched element
             o.browserWindow = $ window
             o.windowWidth   = o.browserWindow.width()
+            o.unwrapWidth   =  o.getChildrenWidth()   # unwrapped width for the breadcrumbs
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
@@ -212,8 +213,11 @@
                         # query again the dom and store it again in a variable
                         hiddenItems = holder.find 'ul > li'
 
+                        # remove the remaining hidden item if the parent width and greater than or equal to the unwrap width
+                        holder.after hiddenItems.detach() if hiddenItems.length is 1 and o.el.width() >= o.unwrapWidth
+
                         # remove the holder if there is no more item left.
-                        if hiddenItems.length is 0
+                        if hiddenItems.length <= 1 and o.el.width() >= o.unwrapWidth
                             holder.remove()
 
                             # delete the reference since the holder element have been remove already
