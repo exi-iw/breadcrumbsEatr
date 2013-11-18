@@ -90,78 +90,138 @@
 
             # Initialize
             o.el            = $ el
-            o.cloneEl       = o.el.clone() # Reference to the old untouched element
+            o.cloneEl       = o.el.clone()            # Reference to the old untouched element
             o.browserWindow = $ window
+            o.windowWidth   = o.browserWindow.width()
+            o.unwrapWidth   =  o.getChildrenWidth()   # unwrapped width for the breadcrumbs
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
             # plugin keys ::start
             o.pluginKey = o.generateRandomKey()
-            o.stateKey  = "#{ pluginName.toLowerCase() }-state"
 
             # generate random key for resize event to prevent event namespace conflicts
             o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
             # plugin keys ::end
+
+            # set the widths of each elements ::start
+            o.el
+                .children('li')
+                .each ->
+                    current = $ this
+
+                    # set the elements float left and display inline-block and store the width to the element
+                    current
+                        .css(
+                             float: 'left',
+                             display: 'inline-block'
+                        )
+                        .data "#{ pluginName.toLowerCase() }-width", current.outerWidth(true)
+            # set the widths of each elements ::end
 
             # add the wrapper class to the element
             o.el.addClass o.opts.wrapperClass
 
             o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
-            o.el.data o.stateKey, 'decompressed'
-
             # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
+                items   = current.children 'li'
+                holder  = items.filter ".#{ o.opts.holder.class }"
 
-                items = current.children 'li'
+                if holder.length is 0
+                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
 
-                current.data o.stateKey, 'compressed'
+                    # set the holder's css to float left and display inline-block
+                    holder.css
+                        float: 'left',
+                        display: 'inline-block'
 
-                # slice the items beginning to the second element up to the second to the last element
-                hiddenItems = items
-                    .slice(1, (items.length - 1))
-                    .detach()
+                # initialize an array for storage of the hidden items
+                hiddenItems = []
 
-                holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+                # loop through the breadcrumb children starting from the element after the holder element until the element before the active element
+                current
+                    .children(".#{ o.opts.holder.class }")
+                    .nextUntil('.active')
+                    .each ->
+                        crumb = $ this
 
-                o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
+                        hiddenItems.push(crumb.detach().get(0)) if o.optimalCrumbHeight isnt o.el.height()
 
-                holder
-                    .children('ul')
-                    .hide()
-                    .append hiddenItems
+                        # delete the reference since it does not correctly point it anymore the element
+                        crumb = null
+
+                if hiddenItems.length > 0
+                    # trigger first the beforeCompress callback
+                    o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+
+                    hiddenItems = $ hiddenItems
+                    holderUl    = holder.children 'ul'
+
+                    # hide first the child ul of the holder
+                    holderUl.hide()
+
+                    # trigger onCompress callback
+                    o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
+
+                    # append the hiddenItems in the holder's child ul
+                    holderUl.append hiddenItems
+
+                    # trigger the afterCompress callback
+                    o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
                 # delete the reference since it does not correctly point it anymore to the hidden elements
                 hiddenItems = null
 
-                o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
-
             # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
-                current = $ this
+                current     = $ this
+                holder      = current.find ".#{ o.opts.holder.class }"
+                hiddenItems = holder.find 'ul > li'
 
-                current.data o.stateKey, 'decompressed'
+                if hiddenItems.length > 0
+                    hiddenItems   = $ hiddenItems.get().reverse()
+                    releaseItems  = []
+                    childrenWidth = o.getChildrenWidth()
 
-                holder = current.find ".#{ o.opts.holder.class }"
+                    hiddenItems.each ->
+                        crumb = $ this
+                        width = crumb.data "#{ pluginName.toLowerCase() }-width"
 
-                hiddenItems = holder
-                    .find("ul li")
-                    .detach()
+                        if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
+                            releaseItems.unshift(crumb.detach().get(0))
 
-                holder.remove()
+                            childrenWidth += width
+                        else
+                            return false
 
-                o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
+                    if releaseItems.length > 0
+                        # trigger first the beforeDecompress callback
+                        o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
 
-                current
-                    .find('li')
-                    .filter(':first-child')
-                    .after hiddenItems
+                        # trigger onDecompress callback
+                        o.opts.onDecompress(_this) if $.isFunction(o.opts.onDecompress)
 
-                # delete the reference since the holder element have been remove already
-                holder = null
+                        # append the released items after the holder
+                        holder.after ($ releaseItems)
 
-                o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
+                        # query again the dom and store it again in a variable
+                        hiddenItems = holder.find 'ul > li'
+
+                        # remove the remaining hidden item if the parent width and greater than or equal to the unwrap width
+                        holder.after hiddenItems.detach() if hiddenItems.length is 1 and o.el.width() >= o.unwrapWidth
+
+                        # remove the holder if there is no more item left.
+                        if hiddenItems.length <= 1 and o.el.width() >= o.unwrapWidth
+                            holder.remove()
+
+                            # delete the reference since the holder element have been remove already
+                            holder = null
+
+                        # trigger the afterDecompress callback
+                        o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             o.browserWindow.on o.resizeKey, o.resize
 
@@ -172,8 +232,7 @@
             o.browserWindow.trigger o.resizeKey
 
         o.resize = (e) ->
-            current      = $ this
-            optimalWidth = o.el.data "#{ pluginName.toLowerCase() }-optimalwidth"
+            current = $ this
 
             crumbHeights = o.el
                 .children('li')
@@ -182,45 +241,42 @@
                 )
                 .get()
 
-            optimalCrumbHeight = _.max crumbHeights
+            o.optimalCrumbHeight = _.max crumbHeights
 
-            if typeof optimalWidth is "undefined"
-                if optimalCrumbHeight isnt o.el.height()
-                    o.el.data "#{ pluginName.toLowerCase() }-optimalwidth", (current.width() + o.opts.allowance)
+            if o.optimalCrumbHeight isnt o.el.height()
+                o.el
+                    .addClass(o.opts.wrappedClass)
+                    .trigger "compress.#{ pluginName }"
 
-                    o.compress()
-            else
-                if current.width() >= optimalWidth
-                    o.decompress() if _this.isCompressed()
+            if o.windowWidth isnt o.browserWindow.width()
+                if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
+                    o.el
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
                 else
-                    o.compress() unless _this.isCompressed()
+                    o.el
+                        .removeClass(o.opts.wrappedClass)
+                        .trigger "decompress.#{ pluginName }"
+
+                o.windowWidth = o.browserWindow.width()
 
             return null
 
-        o.compress = ->
-            o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
+        o.getChildrenWidth = ->
+            totalWidth = 0
 
             o.el
-                .addClass(o.opts.wrappedClass)
-                .trigger "compress.#{ pluginName }"
+                .children()
+                .each ->
+                    totalWidth += ($ this).width()
 
-        o.decompress = ->
-            o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
-
-            o.el
-                .removeClass(o.opts.wrappedClass)
-                .trigger "decompress.#{ pluginName }"
+            return totalWidth
 
         o.generateRandomKey = ->
             Math
                 .random()
                 .toString(36)
                 .substring 7
-
-        _this.getState = ->
-            state = o.el.data o.stateKey
-
-            return if typeof state is "undefined" then 'decompressed' else state
 
         _this.isCompressed = ->
             return if _this.getState() is 'compressed' then true else false
