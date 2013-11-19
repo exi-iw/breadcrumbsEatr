@@ -148,10 +148,13 @@
                     .each ->
                         crumb = $ this
 
-                        hiddenItems.push(crumb.detach().get(0)) if o.optimalCrumbHeight isnt o.el.height()
+                        if o.optimalCrumbHeight isnt o.el.height()
+                            hiddenItems.push crumb.detach().get(0)
 
-                        # delete the reference since it does not correctly point it anymore the element
-                        crumb = null
+                            # delete the reference since it does not correctly point it anymore the element
+                            crumb = null
+                        else
+                            return false
 
                 if hiddenItems.length > 0
                     # trigger first the beforeCompress callback
