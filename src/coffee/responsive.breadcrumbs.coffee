@@ -142,8 +142,7 @@
                 hiddenItems = []
 
                 # loop through the breadcrumb children starting from the element after the holder element until the element before the active element
-                current
-                    .children(".#{ o.opts.holder.class }")
+                holder
                     .nextUntil('.active')
                     .each ->
                         crumb = $ this
