@@ -8,6 +8,7 @@
 
     pluginName = 'responsiveBreadcrumbs'
     defaults =
+        activeClass:            'active'
         compressed:
             wrapperClass: "#{ pluginName.toLowerCase() }-compressed-wrapper"
             beforeOpen:   (obj) ->
@@ -172,7 +173,7 @@
 
                 # loop through the breadcrumb children starting from the element after the holder element until the element before the active element
                 holder
-                    .nextUntil('.active')
+                    .nextUntil(o.opts.activeClass)
                     .each ->
                         crumb = $ this
 
