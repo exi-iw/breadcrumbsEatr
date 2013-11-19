@@ -281,7 +281,9 @@
                     .css(
                         top:  (o.el.offset().top + o.el.outerHeight())
                         left: ps.left
-                    ).fadeIn
+                    )
+                    .stop(true, true)
+                    .fadeIn
                         duration: o.opts.holderAnimation.showDuration
                         easing:   o.opts.holderAnimation.showEasing
                         complete: ->
@@ -293,15 +295,27 @@
             o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
                 current = $ this
 
+                o.dropdownTimer = window.setTimeout( ->
+                    o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
+                , 500)
+
+            o.dropdownWrapper.on "#{ o.hoverIn }.#{ pluginName }", ->
+                window.clearTimeout o.dropdownTimer
+
+            o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", (e) ->
+                current = $ this
+
                 o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
 
-                # o.dropdownWrapper.fadeOut
-                #     duration: o.opts.holderAnimation.hideDuration
-                #     easing:   o.opts.holderAnimation.hideEasing
-                #     complete: ->
-                #         o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+                current
+                    .stop(true, true)
+                    .fadeOut
+                        duration: o.opts.holderAnimation.hideDuration
+                        easing:   o.opts.holderAnimation.hideEasing
+                        complete: ->
+                            o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
 
-                #         o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                            o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
