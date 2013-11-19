@@ -267,7 +267,7 @@
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
                 ps = o.el
@@ -289,7 +289,7 @@
                             o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
 
             # delegate the normalized event for hoverOut to the holder element
-            o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+            o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
                 o.dropdownTimer = window.setTimeout( ->
                     o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
                 , 500)
@@ -297,7 +297,7 @@
             o.dropdownWrapper.on "#{ o.hoverIn }.#{ pluginName }", ->
                 window.clearTimeout o.dropdownTimer
 
-            o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", (e) ->
+            o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", ->
                 current = $ this
 
                 o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
