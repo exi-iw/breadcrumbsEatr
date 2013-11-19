@@ -263,9 +263,11 @@
                     o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
                 , 500)
 
+            # bind the normalized event for hoverIn to the dropdownWrapper
             o.dropdownWrapper.on "#{ o.hoverIn }.#{ pluginName }", ->
                 window.clearTimeout o.dropdownTimer
 
+            # bind the normalized event for hoverOut to the dropdownWrapper
             o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", ->
                 current = $ this
 
