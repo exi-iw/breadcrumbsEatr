@@ -23,8 +23,21 @@
         exposeItems:            false
         fixIEResize:            false
         holder:
-            class: "#{ pluginName.toLowerCase() }-holder"
-            text:  '...'
+            class:     "#{ pluginName.toLowerCase() }-holder"
+            text:      '...'
+            listClass: "#{ pluginName.toLowerCase() }-hidden-list"
+        holderAnimation:
+            fade:         true
+            showEasing:   'swing'
+            hideEasing:   'swing'
+            showDuration: 400
+            hideDuration: 400
+            onBeforeShow: (obj) ->
+            onShow:       (obj) ->
+            onAfterShow:  (obj) ->
+            onBeforeHide: (obj) ->
+            onHide:       (obj) ->
+            onAfterHide:  (obj) ->
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
@@ -82,6 +95,11 @@
 
                 return false
 
+            if typeof window.Modernizr is "undefined"
+                o.error 'Modernizr is required.'
+
+                return false
+
             # Extend options
             o.opts = $.extend {}, defaults, options, metadata
 
@@ -104,6 +122,11 @@
             o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
             # plugin keys ::end
 
+            # normalize events ::start
+            o.hoverIn  = if Modernizr.touch then 'touchstart' else 'mouseenter'
+            o.hoverOut = if Modernizr.touch then 'touchend' else 'mouseleave'
+            # normalize events ::end
+
             # set the widths of each elements ::start
             o.el
                 .children('li')
@@ -122,6 +145,14 @@
             # add the wrapper class to the element
             o.el.addClass o.opts.wrapperClass
 
+            # create the dropdown wrapper
+            o.dropdownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"><ul class=\"#{ pluginName.toLowerCase() }-hidden-list clearfix\" /></div>")
+
+            # append the dropdown wrapper to the body tag
+            o.dropdownWrapper
+                .hide()
+                .appendTo document.body
+
             o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
             # bind the element to a custom event named compress
@@ -131,7 +162,7 @@
                 holder  = items.filter ".#{ o.opts.holder.class }"
 
                 if holder.length is 0
-                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a></li>").insertAfter items.first()
 
                     # set the holder's css to float left and display inline-block
                     holder.css
@@ -159,17 +190,21 @@
                     # trigger first the beforeCompress callback
                     o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
-                    hiddenItems = $ hiddenItems
-                    holderUl    = holder.children 'ul'
-
-                    # hide first the child ul of the holder
-                    holderUl.hide()
+                    hiddenItems  = $ hiddenItems
+                    dropdownList = o.dropdownWrapper.children ".#{ pluginName.toLowerCase() }-hidden-list"
 
                     # trigger onCompress callback
                     o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
 
                     # append the hiddenItems in the holder's child ul
-                    holderUl.append hiddenItems
+                    dropdownList.append hiddenItems
+
+                    # set the hidden list items to block
+                    dropdownList
+                        .children()
+                        .css
+                            float:   'none'
+                            display: 'block'
 
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
@@ -179,9 +214,10 @@
 
             # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
-                current     = $ this
-                holder      = current.find ".#{ o.opts.holder.class }"
-                hiddenItems = holder.find 'ul > li'
+                current      = $ this
+                holder       = current.find ".#{ o.opts.holder.class }"
+                dropdownList = o.dropdownWrapper.children ".#{ pluginName.toLowerCase() }-hidden-list"
+                hiddenItems  = dropdownList.find 'li'
 
                 if hiddenItems.length > 0
                     hiddenItems   = $ hiddenItems.get().reverse()
@@ -210,7 +246,7 @@
                         holder.after ($ releaseItems)
 
                         # query again the dom and store it again in a variable
-                        hiddenItems = holder.find 'ul > li'
+                        hiddenItems = dropdownList.find 'li'
 
                         # remove the remaining hidden item if the parent width and greater than or equal to the unwrap width
                         holder.after hiddenItems.detach() if hiddenItems.length is 1 and o.el.width() >= o.unwrapWidth
@@ -222,9 +258,67 @@
                             # delete the reference since the holder element have been remove already
                             holder = null
 
+                        # set the css of the children
+                        current
+                            .children()
+                            .css
+                                float:   'left'
+                                display: 'inline-block'
+
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
+            # delegate the normalized event for hoverIn to the holder element
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                current  = $ this
+
+                o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
+
+                ps = o.el
+                    .find(".#{ pluginName.toLowerCase() }-holder")
+                    .offset()
+
+                o.dropdownWrapper
+                    .css(
+                        top:  (o.el.offset().top + o.el.outerHeight())
+                        left: ps.left
+                    )
+                    .stop(true, true)
+                    .fadeIn
+                        duration: o.opts.holderAnimation.showDuration
+                        easing:   o.opts.holderAnimation.showEasing
+                        complete: ->
+                            o.opts.holderAnimation.onShow(_this) if $.isFunction(o.opts.holderAnimation.onShow)
+
+                            o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
+
+            # delegate the normalized event for hoverOut to the holder element
+            o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                current = $ this
+
+                o.dropdownTimer = window.setTimeout( ->
+                    o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
+                , 500)
+
+            o.dropdownWrapper.on "#{ o.hoverIn }.#{ pluginName }", ->
+                window.clearTimeout o.dropdownTimer
+
+            o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", (e) ->
+                current = $ this
+
+                o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
+
+                current
+                    .stop(true, true)
+                    .fadeOut
+                        duration: o.opts.holderAnimation.hideDuration
+                        easing:   o.opts.holderAnimation.hideEasing
+                        complete: ->
+                            o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+
+                            o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+
+            # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
 
             # execute custom code after the plugin has loaded
@@ -275,10 +369,7 @@
             return totalWidth
 
         o.generateRandomKey = ->
-            Math
-                .random()
-                .toString(36)
-                .substring 7
+            return "rb-#{ Math.random().toString(36).substring(7) }"
 
         _this.isCompressed = ->
             return if _this.getState() is 'compressed' then true else false
