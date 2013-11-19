@@ -355,11 +355,17 @@
             # Remove Events attached to the elements
             o.el.off ".#{ pluginName }"
 
+            # remove the dropdown wrapper
+            o.dropdownWrapper.remove()
+
             # remove any events attached to window object
             ($ window).off ".#{ pluginName }"
 
             # Remove Plugin Data
             o.el.removeData pluginName
+
+            # replace the current element with the cloned element
+            o.el.replaceWith o.cloneEl
 
 
         # Remove Element Classes
