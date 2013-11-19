@@ -23,8 +23,9 @@
         exposeItems:            false
         fixIEResize:            false
         holder:
-            class: "#{ pluginName.toLowerCase() }-holder"
-            text:  '...'
+            class:     "#{ pluginName.toLowerCase() }-holder"
+            text:      '...'
+            listClass: "#{ pluginName.toLowerCase() }-hidden-list"
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
@@ -131,7 +132,7 @@
                 holder  = items.filter ".#{ o.opts.holder.class }"
 
                 if holder.length is 0
-                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"clearfix\" /></li>").insertAfter items.first()
+                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"#{ pluginName.toLowerCase() }-hidden-list clearfix\" /></li>").insertAfter items.first()
 
                     # set the holder's css to float left and display inline-block
                     holder.css
@@ -162,7 +163,7 @@
                     hiddenItems = $ hiddenItems
                     holderUl    = holder.children 'ul'
 
-                    # hide first the child ul of the holder
+                    # hide the child ul of the holder element.
                     holderUl.hide()
 
                     # trigger onCompress callback
@@ -170,6 +171,9 @@
 
                     # append the hiddenItems in the holder's child ul
                     holderUl.append hiddenItems
+
+                    # set the hidden list items to block
+                    holderUl.children().css 'display', 'block'
 
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
@@ -208,6 +212,8 @@
 
                         # append the released items after the holder
                         holder.after ($ releaseItems)
+
+                        current.children().css 'display', 'inline-block'
 
                         # query again the dom and store it again in a variable
                         hiddenItems = holder.find 'ul > li'
