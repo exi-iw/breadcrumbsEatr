@@ -343,9 +343,6 @@
         o.generateRandomKey = ->
             return "rb-#{ Math.random().toString(36).substring(7) }"
 
-        _this.isCompressed = ->
-            return if _this.getState() is 'compressed' then true else false
-
         _this.destroy = ->
             o.opts.onDestroy(_this) if $.isFunction(o.opts.onDestroy)
 
