@@ -9,14 +9,6 @@
     pluginName = 'responsiveBreadcrumbs'
     defaults =
         activeClass:            'active'
-        compressed:
-            wrapperClass: "#{ pluginName.toLowerCase() }-compressed-wrapper"
-            beforeOpen:   (obj) ->
-            open:         (obj) ->
-            afterOpen:    (obj) ->
-            beforeClose:  (obj) ->
-            close:        (obj) ->
-            afterClose:   (obj) ->
         debounceTime:           200
         enhanceAnimation:       true
         exposeItems:            false
