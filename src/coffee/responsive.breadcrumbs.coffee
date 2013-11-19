@@ -26,6 +26,18 @@
             class:     "#{ pluginName.toLowerCase() }-holder"
             text:      '...'
             listClass: "#{ pluginName.toLowerCase() }-hidden-list"
+        holderAnimation:
+            fade:         true
+            showEasing:   'swing'
+            hideEasing:   'swing'
+            showDuration: 400
+            hideDuration: 400
+            onBeforeShow: (obj) ->
+            onShow:       (obj) ->
+            onAfterShow:  (obj) ->
+            onBeforeHide: (obj) ->
+            onHide:       (obj) ->
+            onAfterHide:  (obj) ->
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
@@ -83,6 +95,11 @@
 
                 return false
 
+            if typeof window.Modernizr is "undefined"
+                o.error 'Modernizr is required.'
+
+                return false
+
             # Extend options
             o.opts = $.extend {}, defaults, options, metadata
 
@@ -105,6 +122,11 @@
             o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
             # plugin keys ::end
 
+            # normalize events ::start
+            o.hoverIn  = if Modernizr.touch then 'touchstart' else 'mouseenter'
+            o.hoverOut = if Modernizr.touch then 'touchend' else 'mouseleave'
+            # normalize events ::end
+
             # set the widths of each elements ::start
             o.el
                 .children('li')
@@ -122,6 +144,9 @@
 
             # add the wrapper class to the element
             o.el.addClass o.opts.wrapperClass
+
+            # create and append the dropdown wrapper to the body tag
+            o.dropDownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"></div>").appendTo document.body
 
             o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
@@ -231,6 +256,39 @@
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
+            # delegate the normalized event for hoverIn to the holder element
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                current  = $ this
+
+                o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
+
+                # current
+                #     .find(".#{ pluginName.toLowerCase() }-hidden-list")
+                #     .fadeIn
+                #         duration: o.opts.holderAnimation.showDuration
+                #         easing:   o.opts.holderAnimation.showEasing
+                #         complete: ->
+                #             o.opts.holderAnimation.onShow(_this) if $.isFunction(o.opts.holderAnimation.onShow)
+
+                #             o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
+
+            # delegate the normalized event for hoverOut to the holder element
+            o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                current = $ this
+
+                o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
+
+                # current
+                #     .find(".#{ pluginName.toLowerCase() }-hidden-list")
+                #     .fadeOut
+                #         duration: o.opts.holderAnimation.hideDuration
+                #         easing:   o.opts.holderAnimation.hideEasing
+                #         complete: ->
+                #             o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+
+                #             o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+
+            # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
 
             # execute custom code after the plugin has loaded
@@ -281,10 +339,7 @@
             return totalWidth
 
         o.generateRandomKey = ->
-            Math
-                .random()
-                .toString(36)
-                .substring 7
+            return "rb-#{ Math.random().toString(36).substring(7) }"
 
         _this.isCompressed = ->
             return if _this.getState() is 'compressed' then true else false
