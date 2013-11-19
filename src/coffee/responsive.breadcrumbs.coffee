@@ -200,7 +200,11 @@
                     dropdownList.append hiddenItems
 
                     # set the hidden list items to block
-                    dropdownList.children().css 'display', 'block'
+                    dropdownList
+                        .children()
+                        .css
+                            float:   'none'
+                            display: 'block'
 
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
@@ -241,7 +245,11 @@
                         # append the released items after the holder
                         holder.after ($ releaseItems)
 
-                        current.children().css 'display', 'inline-block'
+                        current
+                            .children()
+                            .css
+                                float:   'left'
+                                display: 'inline-block'
 
                         # query again the dom and store it again in a variable
                         hiddenItems = dropdownList.find 'li'
