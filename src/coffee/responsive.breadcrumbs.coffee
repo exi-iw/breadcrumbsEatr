@@ -273,15 +273,21 @@
 
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
-                # current
-                #     .find(".#{ pluginName.toLowerCase() }-hidden-list")
-                #     .fadeIn
-                #         duration: o.opts.holderAnimation.showDuration
-                #         easing:   o.opts.holderAnimation.showEasing
-                #         complete: ->
-                #             o.opts.holderAnimation.onShow(_this) if $.isFunction(o.opts.holderAnimation.onShow)
+                ps = o.el
+                    .find(".#{ pluginName.toLowerCase() }-holder")
+                    .offset()
 
-                #             o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
+                o.dropdownWrapper
+                    .css(
+                        top:  (o.el.offset().top + o.el.outerHeight())
+                        left: ps.left
+                    ).fadeIn
+                        duration: o.opts.holderAnimation.showDuration
+                        easing:   o.opts.holderAnimation.showEasing
+                        complete: ->
+                            o.opts.holderAnimation.onShow(_this) if $.isFunction(o.opts.holderAnimation.onShow)
+
+                            o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
 
             # delegate the normalized event for hoverOut to the holder element
             o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
@@ -289,15 +295,13 @@
 
                 o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
 
-                # current
-                #     .find(".#{ pluginName.toLowerCase() }-hidden-list")
-                #     .fadeOut
-                #         duration: o.opts.holderAnimation.hideDuration
-                #         easing:   o.opts.holderAnimation.hideEasing
-                #         complete: ->
-                #             o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+                # o.dropdownWrapper.fadeOut
+                #     duration: o.opts.holderAnimation.hideDuration
+                #     easing:   o.opts.holderAnimation.hideEasing
+                #     complete: ->
+                #         o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
 
-                #             o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                #         o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
