@@ -14,9 +14,10 @@
         exposeItems:            false
         fixIEResize:            false
         holder:
-            class:     "#{ pluginName.toLowerCase() }-holder"
-            text:      '...'
-            listClass: "#{ pluginName.toLowerCase() }-hidden-list"
+            class:      "#{ pluginName.toLowerCase() }-holder"
+            hoverClass: "#{ pluginName.toLowerCase() }-holder-hovered"
+            listClass:  "#{ pluginName.toLowerCase() }-hidden-list"
+            text:       '...'
         holderAnimation:
             fade:         true
             showEasing:   'swing'
@@ -239,6 +240,9 @@
             o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
+                # add the hover class to the holder element
+                ($ this).addClass o.opts.holder.hoverClass
+
                 ps = o.el
                     .find(".#{ pluginName.toLowerCase() }-holder")
                     .offset()
@@ -280,6 +284,11 @@
                         easing:   o.opts.holderAnimation.hideEasing
                         complete: ->
                             o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+
+                            # remove the hover class to the holder element
+                            o.el
+                                .children(".#{ pluginName.toLowerCase() }-holder")
+                                .removeClass o.opts.holder.hoverClass
 
                             o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
 
