@@ -11,9 +11,7 @@
 
     ($ '#basic-usage')
         .find('.breadcrumb')
-        .responsiveBreadcrumbs
-            onLoad: ->
-                console.log 'loaded'
+        .responsiveBreadcrumbs()
 
     # always return null
     return null
