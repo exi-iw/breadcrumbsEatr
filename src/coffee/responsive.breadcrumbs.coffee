@@ -270,8 +270,6 @@
 
             # delegate the normalized event for hoverIn to the holder element
             o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
-                current  = $ this
-
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
                 ps = o.el
@@ -294,8 +292,6 @@
 
             # delegate the normalized event for hoverOut to the holder element
             o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
-                current = $ this
-
                 o.dropdownTimer = window.setTimeout( ->
                     o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
                 , 500)
