@@ -245,12 +245,6 @@
                         # append the released items after the holder
                         holder.after ($ releaseItems)
 
-                        current
-                            .children()
-                            .css
-                                float:   'left'
-                                display: 'inline-block'
-
                         # query again the dom and store it again in a variable
                         hiddenItems = dropdownList.find 'li'
 
@@ -263,6 +257,13 @@
 
                             # delete the reference since the holder element have been remove already
                             holder = null
+
+                        # set the css of the children
+                        current
+                            .children()
+                            .css
+                                float:   'left'
+                                display: 'inline-block'
 
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
