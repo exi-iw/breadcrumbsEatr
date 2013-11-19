@@ -145,8 +145,13 @@
             # add the wrapper class to the element
             o.el.addClass o.opts.wrapperClass
 
-            # create and append the dropdown wrapper to the body tag
-            o.dropDownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"></div>").appendTo document.body
+            # create the dropdown wrapper
+            o.dropdownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"><ul class=\"#{ pluginName.toLowerCase() }-hidden-list clearfix\" /></div>")
+
+            # append the dropdown wrapper to the body tag
+            o.dropdownWrapper
+                .hide()
+                .appendTo document.body
 
             o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
@@ -157,7 +162,7 @@
                 holder  = items.filter ".#{ o.opts.holder.class }"
 
                 if holder.length is 0
-                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a><ul class=\"#{ pluginName.toLowerCase() }-hidden-list clearfix\" /></li>").insertAfter items.first()
+                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a></li>").insertAfter items.first()
 
                     # set the holder's css to float left and display inline-block
                     holder.css
@@ -185,20 +190,17 @@
                     # trigger first the beforeCompress callback
                     o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
-                    hiddenItems = $ hiddenItems
-                    holderUl    = holder.children 'ul'
-
-                    # hide the child ul of the holder element.
-                    holderUl.hide()
+                    hiddenItems  = $ hiddenItems
+                    dropdownList = o.dropdownWrapper.children ".#{ pluginName.toLowerCase() }-hidden-list"
 
                     # trigger onCompress callback
                     o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
 
                     # append the hiddenItems in the holder's child ul
-                    holderUl.append hiddenItems
+                    dropdownList.append hiddenItems
 
                     # set the hidden list items to block
-                    holderUl.children().css 'display', 'block'
+                    dropdownList.children().css 'display', 'block'
 
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
@@ -208,9 +210,10 @@
 
             # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
-                current     = $ this
-                holder      = current.find ".#{ o.opts.holder.class }"
-                hiddenItems = holder.find 'ul > li'
+                current      = $ this
+                holder       = current.find ".#{ o.opts.holder.class }"
+                dropdownList = o.dropdownWrapper.children ".#{ pluginName.toLowerCase() }-hidden-list"
+                hiddenItems  = dropdownList.find 'li'
 
                 if hiddenItems.length > 0
                     hiddenItems   = $ hiddenItems.get().reverse()
@@ -241,7 +244,7 @@
                         current.children().css 'display', 'inline-block'
 
                         # query again the dom and store it again in a variable
-                        hiddenItems = holder.find 'ul > li'
+                        hiddenItems = dropdownList.find 'li'
 
                         # remove the remaining hidden item if the parent width and greater than or equal to the unwrap width
                         holder.after hiddenItems.detach() if hiddenItems.length is 1 and o.el.width() >= o.unwrapWidth
