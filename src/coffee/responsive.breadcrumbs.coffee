@@ -124,13 +124,8 @@
                 .each ->
                     current = $ this
 
-                    # set the elements float left and display inline-block and store the width to the element
-                    current
-                        .css(
-                             float: 'left',
-                             display: 'inline-block'
-                        )
-                        .data "#{ pluginName.toLowerCase() }-width", current.outerWidth(true)
+                    # store the width to the element
+                    current.data "#{ pluginName.toLowerCase() }-width", current.outerWidth(true)
             # set the widths of each elements ::end
 
             # add the wrapper class to the element
@@ -154,11 +149,6 @@
 
                 if holder.length is 0
                     holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a></li>").insertAfter items.first()
-
-                    # set the holder's css to float left and display inline-block
-                    holder.css
-                        float: 'left',
-                        display: 'inline-block'
 
                 # initialize an array for storage of the hidden items
                 hiddenItems = []
@@ -189,13 +179,6 @@
 
                     # append the hiddenItems in the holder's child ul
                     dropdownList.append hiddenItems
-
-                    # set the hidden list items to block
-                    dropdownList
-                        .children()
-                        .css
-                            float:   'none'
-                            display: 'block'
 
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
@@ -248,13 +231,6 @@
 
                             # delete the reference since the holder element have been remove already
                             holder = null
-
-                        # set the css of the children
-                        current
-                            .children()
-                            .css
-                                float:   'left'
-                                display: 'inline-block'
 
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
