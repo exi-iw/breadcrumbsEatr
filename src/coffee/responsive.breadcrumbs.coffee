@@ -336,7 +336,7 @@
             o.el
                 .children()
                 .each ->
-                    totalWidth += ($ this).width()
+                    totalWidth += ($ this).outerWidth(true)
 
             return totalWidth
 
