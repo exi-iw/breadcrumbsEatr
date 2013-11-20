@@ -235,9 +235,8 @@
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-
             # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
                 # add the hover class to the holder element
@@ -261,8 +260,15 @@
 
                             o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
 
+                e.preventDefault()
+
+
             # delegate events for non-touch devices
             unless Modernizr.touch
+                # delegate the click event for preventing default behavior
+                o.el.on "click.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                    e.preventDefault()
+
                 # delegate the mouseleave event for hoverOut to the holder element
                 o.el.on "mouseleave.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
                     o.dropdownTimer = window.setTimeout( ->
