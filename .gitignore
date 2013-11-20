@@ -2,7 +2,7 @@ node_modules
 assets/compiled/*
 !assets/compiled/.gitkeep
 assets/old-dependencies
-assets/dependencies
+assets/dependencies/*
 !assets/dependencies/.gitkeep
 assets/js/site.js
 assets/css/site.css
