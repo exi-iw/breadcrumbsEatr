@@ -1,0 +1,40 @@
+{
+  "name": "responsive-breadcrumbs",
+  "version": "1.0.0-beta",
+  "homepage": "https://github.com/exi-iw/responsive-breadcrumbs",
+  "authors": [
+    "Exequiel Navarrete <exequiel.navarrete@ninthdesign.com>"
+  ],
+  "description": "jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.",
+  "keywords": [
+    "breadcrumbs",
+    "responsive",
+    "responsive-breadcrumbs",
+    "coffee",
+    "less"
+  ],
+  "main": "src/coffee/responsive.breadcrumbs.coffee",
+  "scripts": [
+    "src/coffee/responsive.breadcrumbs.coffee"
+  ],
+  "styles": [
+    "src/less/responsive.breadcrumbs.less"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "1.10.2",
+    "underscore": "1.5.2",
+    "bootstrap": "3.0.2",
+    "modernizr": "2.7.0",
+    "respond": "1.3.0"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/dependencies",
+    "test",
+    "tests"
+  ]
+}

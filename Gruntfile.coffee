@@ -7,24 +7,58 @@ module.exports = (grunt) ->
             common:
                 files:
                     'assets/js/responsive.breadcrumbs.js': 'src/coffee/responsive.breadcrumbs.coffee'
+                    'assets/js/site.js': 'src/coffee/site.coffee'
                 options:
                     bare: true
         less:
             common:
                 files:
-                    'assets/js/responsive.breadcrumbs.css': 'src/less/responsive.breadcrumbs.less'
+                    'assets/css/site.css': 'src/less/site.less'
+                    'assets/css/responsive.breadcrumbs.css': 'src/less/responsive.breadcrumbs.less'
         watch:
             coffee:
-                files: ['src/coffee/responsive.breadcrumbs.coffee']
+                files: ['src/coffee/site.coffee', 'src/coffee/responsive.breadcrumbs.coffee']
                 tasks: ['coffee']
             less:
-                files: ['src/less/responsive.breadcrumbs.less']
+                files: ['src/less/site.less', 'src/less/responsive.breadcrumbs.less']
                 tasks: ['less']
+        concat:
+            rwd:
+                src: ['assets/dependencies/modernizr/modernizr.js', 'assets/dependencies/respond/respond.min.js']
+                dest: 'assets/compiled/rwd.js'
+            libs:
+                src: [
+                    'assets/dependencies/jquery/jquery.min.js',
+                    'assets/dependencies/underscore/underscore-min.js',
+                    'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
+                ]
+                dest: 'assets/compiled/libs.js'
+            syntax:
+                src: [
+                    'assets/dependencies/SyntaxHighlighter/scripts/XRegExp.js',
+                    'assets/dependencies/SyntaxHighlighter/scripts/shCore.js',
+                    'assets/dependencies/SyntaxHighlighter/scripts/shBrushJScript.js'
+                ]
+                dest: 'assets/compiled/syntax.js'
+        concat_css:
+            syntax:
+                src: ['assets/dependencies/SyntaxHighlighter/styles/shCore.css', 'assets/dependencies/SyntaxHighlighter/styles/shCoreDefault.css']
+                dest: 'assets/compiled/syntax.css'
+        notify_hooks:
+            options:
+                enabled: true
+                max_jshint_notifications: 5
+                title: "Responsive Breadcrumbs"
 
     # Load the plugin that provides the "coffee", "less", "watch" task.
     grunt.loadNpmTasks 'grunt-contrib-coffee'
     grunt.loadNpmTasks 'grunt-contrib-less'
     grunt.loadNpmTasks 'grunt-contrib-watch'
+    grunt.loadNpmTasks 'grunt-contrib-concat'
+    grunt.loadNpmTasks 'grunt-concat-css'
+    grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
-    grunt.registerTask 'default', ['coffee']
+    grunt.registerTask 'default', ['concat', 'watch']
+
+    grunt.task.run 'notify_hooks'
