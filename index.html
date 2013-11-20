@@ -10,8 +10,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <link rel="stylesheet" href="assets/dependencies/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="assets/css/site.css" />
+        <link rel="stylesheet" href="assets/dependencies/SyntaxHighlighter/styles/shCore.css" />
+        <link rel="stylesheet" href="assets/dependencies/SyntaxHighlighter/styles/shCoreDefault.css" />
         <link rel="stylesheet" href="assets/css/responsive.breadcrumbs.css" />
+        <link rel="stylesheet" href="assets/css/site.css" />
 
         <script src="assets/compiled/rwd.js"></script>
         <!--[if (gte IE 6)&(lte IE 8)]>
@@ -41,7 +43,7 @@
                                 <a href="/">Home</a>
                             </li>
                             <li>
-                                <a href="#samples">Samples</a>
+                                <a href="#samples" class="scrolling">Samples</a>
                             </li>
                         </ul>
                     </div>
@@ -65,25 +67,25 @@
                             </div>
 
                             <div id="samples" class="container">
-                                <div class="row">
-                                    <section class="col-lg-4">
-                                        <h2>Basic Usage</h2>
+                                <section id="basic-usage">
+                                    <h2>Basic Usage</h2>
+                                
+                                    <nav id="basic-usage" class="breadcrumbs">
+                                        <h2 class="hidden">Breadcrumbs</h2>
+                                       
+                                        <ol class="breadcrumb clearfix">
+                                            <li><a href="#">Home</a></li>
+                                            <li><a href="#">Mobile</a></li>
+                                            <li><a href="#">Support</a></li>
+                                            <li><a href="#">Videos</a></li>
+                                            <li><a href="#">Tutorials</a></li>
+                                            <li><a href="#">Samsung Galaxy Note II</a></li>
+                                            <li class="active"><a href="#">S Pen Apps</a></li>
+                                        </ol>
+                                    </nav>
 
-                                        <nav id="basic-usage" class="breadcrumbs">
-                                            <h2 class="hidden">Breadcrumbs</h2>
-                                           
-                                            <ol class="breadcrumb clearfix">
-                                                <li><a href="#">Home</a></li>
-                                                <li><a href="#">Mobile</a></li>
-                                                <li><a href="#">Support</a></li>
-                                                <li><a href="#">Videos</a></li>
-                                                <li><a href="#">Tutorials</a></li>
-                                                <li><a href="#">Samsung Galaxy Note II</a></li>
-                                                <li class="active"><a href="#">S Pen Apps</a></li>
-                                            </ol>
-                                        </nav>
-                                    </section>
-                                </div>
+                                    <pre class="brush:js">$('#basic-usage').responsiveBreadcrumbs();</pre>
+                                </section>
                             </div>
 
                         </div>
@@ -105,5 +107,10 @@
         <script src="assets/compiled/libs.js"></script>
         <script src="assets/js/responsive.breadcrumbs.js"></script>
         <script src="assets/js/site.js"></script>
+
+        <script src="assets/compiled/syntax.js"></script>
+        <script type="text/javascript">
+            SyntaxHighlighter.all()
+        </script>
     </body>
 </html>
