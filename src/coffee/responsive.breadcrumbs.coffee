@@ -262,6 +262,26 @@
 
                 e.preventDefault()
 
+            # bind custom event named close to close or hide the dropdown
+            o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
+                current = $ this
+
+                o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
+
+                current
+                    .stop(true, true)
+                    .fadeOut
+                        duration: o.opts.holderAnimation.hideDuration
+                        easing:   o.opts.holderAnimation.hideEasing
+                        complete: ->
+                            o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+
+                            # remove the hover class to the holder element
+                            o.el
+                                .children(".#{ pluginName.toLowerCase() }-holder")
+                                .removeClass o.opts.holder.hoverClass
+
+                            o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
 
             # delegate events for non-touch devices
             unless Modernizr.touch
@@ -272,7 +292,7 @@
                 # delegate the mouseleave event for hoverOut to the holder element
                 o.el.on "mouseleave.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
                     o.dropdownTimer = window.setTimeout( ->
-                        o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
+                        o.dropdownWrapper.trigger "mouseleave.#{ pluginName }"
                     , 500)
 
                 # bind the mouseenter event for hoverIn to the dropdownWrapper
@@ -281,46 +301,13 @@
 
                 # bind the mouseleave event for hoverOut to the dropdownWrapper
                 o.dropdownWrapper.on "mouseleave.#{ pluginName }", ->
-                    current = $ this
-
-                    o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
-
-                    current
-                        .stop(true, true)
-                        .fadeOut
-                            duration: o.opts.holderAnimation.hideDuration
-                            easing:   o.opts.holderAnimation.hideEasing
-                            complete: ->
-                                o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
-
-                                # remove the hover class to the holder element
-                                o.el
-                                    .children(".#{ pluginName.toLowerCase() }-holder")
-                                    .removeClass o.opts.holder.hoverClass
-
-                                o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                    ($ this).trigger "hide.#{ pluginName }"
             else
                 ($ document.body).on "#{ o.hoverIn }.#{ pluginName }", (e) ->
                     target    = $ e.target
                     wrapperId = o.dropdownWrapper.attr 'id'
 
-                    if target.parents(".#{ o.opts.holder.class }").length is 0 and target.parents("##{ wrapperId }").length is 0
-                        o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
-
-                        o.dropdownWrapper
-                            .stop(true, true)
-                            .fadeOut
-                                duration: o.opts.holderAnimation.hideDuration
-                                easing:   o.opts.holderAnimation.hideEasing
-                                complete: ->
-                                    o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
-
-                                    # remove the hover class to the holder element
-                                    o.el
-                                        .children(".#{ pluginName.toLowerCase() }-holder")
-                                        .removeClass o.opts.holder.hoverClass
-
-                                    o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                    o.dropdownWrapper.trigger("hide.#{ pluginName }") if target.parents(".#{ o.opts.holder.class }").length is 0 and target.parents("##{ wrapperId }").length is 0
 
 
             # bind resize event to the window
