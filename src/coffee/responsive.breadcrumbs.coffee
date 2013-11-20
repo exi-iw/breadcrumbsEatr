@@ -303,7 +303,8 @@
                 o.dropdownWrapper.on "mouseleave.#{ pluginName }", ->
                     ($ this).trigger "hide.#{ pluginName }"
             else
-                ($ document.body).on "#{ o.hoverIn }.#{ pluginName }", (e) ->
+                # bind touchstart event to check if the element that has been touched is not the dropdown or the holder
+                ($ document.body).on "touchstart.#{ pluginName }", (e) ->
                     target    = $ e.target
                     wrapperId = o.dropdownWrapper.attr 'id'
 
