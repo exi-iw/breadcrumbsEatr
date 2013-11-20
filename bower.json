@@ -13,6 +13,13 @@
     "coffee",
     "less"
   ],
+  "main": "src/coffee/responsive.breadcrumbs.coffee",
+  "scripts": [
+    "src/coffee/responsive.breadcrumbs.coffee"
+  ],
+  "styles": [
+    "src/less/responsive.breadcrumbs.less"
+  ],
   "license": "MIT",
   "private": true,
   "dependencies": {
