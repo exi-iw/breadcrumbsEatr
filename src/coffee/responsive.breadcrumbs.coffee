@@ -116,7 +116,6 @@
 
             # normalize events ::start
             o.hoverIn  = if Modernizr.touch then 'touchstart' else 'mouseenter'
-            o.hoverOut = if Modernizr.touch then 'touchend' else 'mouseleave'
             # normalize events ::end
 
             # set the widths of each elements ::start
@@ -236,6 +235,7 @@
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
+
             # delegate the normalized event for hoverIn to the holder element
             o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
@@ -261,36 +261,39 @@
 
                             o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
 
-            # delegate the normalized event for hoverOut to the holder element
-            o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
-                o.dropdownTimer = window.setTimeout( ->
-                    o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
-                , 500)
+            # delegate events for non-touch devices
+            unless Modernizr.touch
+                # delegate the mouseleave event for hoverOut to the holder element
+                o.el.on "mouseleave.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
+                    o.dropdownTimer = window.setTimeout( ->
+                        o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
+                    , 500)
 
-            # bind the normalized event for hoverIn to the dropdownWrapper
-            o.dropdownWrapper.on "#{ o.hoverIn }.#{ pluginName }", ->
-                window.clearTimeout o.dropdownTimer
+                # bind the mouseenter event for hoverIn to the dropdownWrapper
+                o.dropdownWrapper.on "mouseenter.#{ pluginName }", ->
+                    window.clearTimeout o.dropdownTimer
 
-            # bind the normalized event for hoverOut to the dropdownWrapper
-            o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", ->
-                current = $ this
+                # bind the mouseleave event for hoverOut to the dropdownWrapper
+                o.dropdownWrapper.on "mouseleave.#{ pluginName }", ->
+                    current = $ this
 
-                o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
+                    o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
 
-                current
-                    .stop(true, true)
-                    .fadeOut
-                        duration: o.opts.holderAnimation.hideDuration
-                        easing:   o.opts.holderAnimation.hideEasing
-                        complete: ->
-                            o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+                    current
+                        .stop(true, true)
+                        .fadeOut
+                            duration: o.opts.holderAnimation.hideDuration
+                            easing:   o.opts.holderAnimation.hideEasing
+                            complete: ->
+                                o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
 
-                            # remove the hover class to the holder element
-                            o.el
-                                .children(".#{ pluginName.toLowerCase() }-holder")
-                                .removeClass o.opts.holder.hoverClass
+                                # remove the hover class to the holder element
+                                o.el
+                                    .children(".#{ pluginName.toLowerCase() }-holder")
+                                    .removeClass o.opts.holder.hoverClass
 
-                            o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                                o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, ->
