@@ -116,7 +116,6 @@
 
             # normalize events ::start
             o.hoverIn  = if Modernizr.touch then 'touchstart' else 'mouseenter'
-            o.hoverOut = if Modernizr.touch then 'touchend' else 'mouseleave'
             # normalize events ::end
 
             # set the widths of each elements ::start
@@ -237,7 +236,7 @@
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
                 # add the hover class to the holder element
@@ -261,18 +260,10 @@
 
                             o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
 
-            # delegate the normalized event for hoverOut to the holder element
-            o.el.on "#{ o.hoverOut }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
-                o.dropdownTimer = window.setTimeout( ->
-                    o.dropdownWrapper.trigger "#{ o.hoverOut }.#{ pluginName }"
-                , 500)
+                e.preventDefault()
 
-            # bind the normalized event for hoverIn to the dropdownWrapper
-            o.dropdownWrapper.on "#{ o.hoverIn }.#{ pluginName }", ->
-                window.clearTimeout o.dropdownTimer
-
-            # bind the normalized event for hoverOut to the dropdownWrapper
-            o.dropdownWrapper.on "#{ o.hoverOut }.#{ pluginName }", ->
+            # bind custom event named close to close or hide the dropdown
+            o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
                 current = $ this
 
                 o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
@@ -291,6 +282,33 @@
                                 .removeClass o.opts.holder.hoverClass
 
                             o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+
+            # delegate events for non-touch devices
+            unless Modernizr.touch
+                # delegate the click event for preventing default behavior
+                o.el.on "click.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                    e.preventDefault()
+
+                # delegate the mouseleave event for hoverOut to the holder element
+                o.el.on "mouseleave.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
+                    o.dropdownTimer = window.setTimeout( ->
+                        o.dropdownWrapper.trigger "mouseleave.#{ pluginName }"
+                    , 500)
+
+                # bind the mouseenter event for hoverIn to the dropdownWrapper
+                o.dropdownWrapper.on "mouseenter.#{ pluginName }", ->
+                    window.clearTimeout o.dropdownTimer
+
+                # bind the mouseleave event for hoverOut to the dropdownWrapper
+                o.dropdownWrapper.on "mouseleave.#{ pluginName }", ->
+                    ($ this).trigger "hide.#{ pluginName }"
+            else
+                ($ document.body).on "#{ o.hoverIn }.#{ pluginName }", (e) ->
+                    target    = $ e.target
+                    wrapperId = o.dropdownWrapper.attr 'id'
+
+                    o.dropdownWrapper.trigger("hide.#{ pluginName }") if target.parents(".#{ o.opts.holder.class }").length is 0 and target.parents("##{ wrapperId }").length is 0
+
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, ->
