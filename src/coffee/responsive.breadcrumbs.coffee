@@ -103,7 +103,7 @@
             o.cloneEl       = o.el.clone()            # Reference to the old untouched element
             o.browserWindow = $ window
             o.windowWidth   = o.browserWindow.width()
-            o.unwrapWidth   =  o.getChildrenWidth()   # unwrapped width for the breadcrumbs
+            o.unwrapWidth   = o.getChildrenWidth()   # unwrapped width for the breadcrumbs
             o.documentBody  = $ document.body
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
