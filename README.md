@@ -14,6 +14,6 @@ Basic Usage
 Dependencies
 ------------
 
-*[jQuery](http://code.jquery.com/jquery-1.8.3.min.js)
-*[underscore](http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js)
-*[Modernizr](http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.js)
+1. [jQuery](http://code.jquery.com/jquery-1.8.3.min.js)
+2. [underscore](http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js)
+3. [Modernizr](http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.js)
