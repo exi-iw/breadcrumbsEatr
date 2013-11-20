@@ -22,6 +22,13 @@ module.exports = (grunt) ->
             less:
                 files: ['src/less/site.less', 'src/less/responsive.breadcrumbs.less']
                 tasks: ['less']
+        concat:
+            rwd:
+                src: ['assets/dependencies/modernizr/modernizr.js', 'assets/dependencies/respond/respond.min.js']
+                dest: 'assets/compiled/rwd.js'
+            libs:
+                src: ['assets/dependencies/jquery/jquery.min.js', 'assets/dependencies/underscore/underscore-min.js', 'assets/dependencies/bootstrap/dist/js/bootstrap.min.js']
+                dest: 'assets/compiled/libs.js'
         notify_hooks:
             options:
                 enabled: true
