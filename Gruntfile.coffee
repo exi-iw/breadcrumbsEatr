@@ -34,6 +34,13 @@ module.exports = (grunt) ->
                     'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
                 ]
                 dest: 'assets/compiled/libs.js'
+            syntax:
+                src: [
+                    'assets/dependencies/SyntaxHighlighter/scripts/XRegExp.js',
+                    'assets/dependencies/SyntaxHighlighter/scripts/shCore.js',
+                    'assets/dependencies/SyntaxHighlighter/scripts/shBrushJScript.js'
+                ]
+                dest: 'assets/compiled/syntax.js'
         notify_hooks:
             options:
                 enabled: true
