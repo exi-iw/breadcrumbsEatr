@@ -376,6 +376,9 @@
             # remove the dropdown wrapper
             o.dropdownWrapper.remove()
 
+            # remove any events attached to the document body
+            o.documentBody.off ".#{ pluginName }"
+
             # remove any events attached to window object
             ($ window).off ".#{ pluginName }"
 
