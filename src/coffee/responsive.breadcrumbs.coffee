@@ -104,6 +104,7 @@
             o.browserWindow = $ window
             o.windowWidth   = o.browserWindow.width()
             o.unwrapWidth   =  o.getChildrenWidth()   # unwrapped width for the breadcrumbs
+            o.documentBody  = $ document.body
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
@@ -137,7 +138,7 @@
             # append the dropdown wrapper to the body tag
             o.dropdownWrapper
                 .hide()
-                .appendTo document.body
+                .appendTo o.documentBody
 
             o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
 
@@ -304,7 +305,7 @@
                     ($ this).trigger "hide.#{ pluginName }"
             else
                 # bind touchstart event to check if the element that has been touched is not the dropdown or the holder
-                ($ document.body).on "touchstart.#{ pluginName }", (e) ->
+                o.documentBody.on "touchstart.#{ pluginName }", (e) ->
                     target    = $ e.target
                     wrapperId = o.dropdownWrapper.attr 'id'
 
