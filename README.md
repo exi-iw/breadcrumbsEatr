@@ -7,4 +7,6 @@ one. Useful when developing a website that is responsive and at the same time ha
 Basic Usage
 -----------
 
+*Note:* you must resize the window in order to see the plugin in action.
+
 `$('#basic-usage').responsiveBreadcrumbs();`
