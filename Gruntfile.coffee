@@ -27,7 +27,12 @@ module.exports = (grunt) ->
                 src: ['assets/dependencies/modernizr/modernizr.js', 'assets/dependencies/respond/respond.min.js']
                 dest: 'assets/compiled/rwd.js'
             libs:
-                src: ['assets/dependencies/jquery/jquery.min.js', 'assets/dependencies/underscore/underscore-min.js', 'assets/dependencies/bootstrap/dist/js/bootstrap.min.js']
+                src: [
+                    'assets/dependencies/jquery/jquery.min.js',
+                    'assets/dependencies/underscore/underscore-min.js',
+                    'assets/dependencies/jquery.scrollTo/jquery.scrollTo.min.js',
+                    'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
+                ]
                 dest: 'assets/compiled/libs.js'
         notify_hooks:
             options:
