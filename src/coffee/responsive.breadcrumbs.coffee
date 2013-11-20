@@ -132,7 +132,7 @@
             o.el.addClass o.opts.wrapperClass
 
             # create the dropdown wrapper
-            o.dropdownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"><ul class=\"#{ pluginName.toLowerCase() }-hidden-list clearfix\" /></div>")
+            o.dropdownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"><ul class=\"#{ o.opts.holder.listClass } clearfix\" /></div>")
 
             # append the dropdown wrapper to the body tag
             o.dropdownWrapper
@@ -172,7 +172,7 @@
                     o.opts.onBeforeCompress(_this) if $.isFunction(o.opts.onBeforeCompress)
 
                     hiddenItems  = $ hiddenItems
-                    dropdownList = o.dropdownWrapper.children ".#{ pluginName.toLowerCase() }-hidden-list"
+                    dropdownList = o.dropdownWrapper.children ".#{ o.opts.holder.listClass }"
 
                     # trigger onCompress callback
                     o.opts.onCompress(_this) if $.isFunction(o.opts.onCompress)
@@ -190,7 +190,7 @@
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current      = $ this
                 holder       = current.find ".#{ o.opts.holder.class }"
-                dropdownList = o.dropdownWrapper.children ".#{ pluginName.toLowerCase() }-hidden-list"
+                dropdownList = o.dropdownWrapper.children ".#{ o.opts.holder.listClass }"
                 hiddenItems  = dropdownList.find 'li'
 
                 if hiddenItems.length > 0
@@ -236,14 +236,14 @@
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.class }", (e) ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
                 # add the hover class to the holder element
                 ($ this).addClass o.opts.holder.hoverClass
 
                 ps = o.el
-                    .find(".#{ pluginName.toLowerCase() }-holder")
+                    .find(".#{ o.opts.holder.class }")
                     .offset()
 
                 o.dropdownWrapper
@@ -278,7 +278,7 @@
 
                             # remove the hover class to the holder element
                             o.el
-                                .children(".#{ pluginName.toLowerCase() }-holder")
+                                .children(".#{ o.opts.holder.class }")
                                 .removeClass o.opts.holder.hoverClass
 
                             o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
@@ -286,11 +286,11 @@
             # delegate events for non-touch devices
             unless Modernizr.touch
                 # delegate the click event for preventing default behavior
-                o.el.on "click.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", (e) ->
+                o.el.on "click.#{ pluginName }", ".#{ o.opts.holder.class }", (e) ->
                     e.preventDefault()
 
                 # delegate the mouseleave event for hoverOut to the holder element
-                o.el.on "mouseleave.#{ pluginName }", ".#{ pluginName.toLowerCase() }-holder", ->
+                o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
                     o.dropdownTimer = window.setTimeout( ->
                         o.dropdownWrapper.trigger "mouseleave.#{ pluginName }"
                     , 500)
@@ -307,8 +307,9 @@
                     target    = $ e.target
                     wrapperId = o.dropdownWrapper.attr 'id'
 
-                    o.dropdownWrapper.trigger("hide.#{ pluginName }") if target.parents(".#{ o.opts.holder.class }").length is 0 and target.parents("##{ wrapperId }").length is 0
-
+                    if (not target.is(".#{ o.opts.holder.class }") and not target.is("##{ wrapperId }")) and
+                        (target.parents(".#{ o.opts.holder.class }").length is 0 and target.parents("##{ wrapperId }").length is 0)
+                            o.dropdownWrapper.trigger("hide.#{ pluginName }") 
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, ->
