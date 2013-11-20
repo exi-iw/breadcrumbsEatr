@@ -4,6 +4,7 @@ assets/compiled/*
 assets/old-dependencies
 assets/dependencies/*
 !assets/dependencies/.gitkeep
+!assets/dependencies/SyntaxHighlighter
 assets/js/site.js
 assets/css/site.css
 assets/js/responsive.breadcrumbs.js
