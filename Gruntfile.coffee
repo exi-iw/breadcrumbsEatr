@@ -27,8 +27,24 @@ module.exports = (grunt) ->
                 src: ['assets/dependencies/modernizr/modernizr.js', 'assets/dependencies/respond/respond.min.js']
                 dest: 'assets/compiled/rwd.js'
             libs:
-                src: ['assets/dependencies/jquery/jquery.min.js', 'assets/dependencies/underscore/underscore-min.js', 'assets/dependencies/bootstrap/dist/js/bootstrap.min.js']
+                src: [
+                    'assets/dependencies/jquery/jquery.min.js',
+                    'assets/dependencies/underscore/underscore-min.js',
+                    'assets/dependencies/jquery.scrollTo/jquery.scrollTo.min.js',
+                    'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
+                ]
                 dest: 'assets/compiled/libs.js'
+            syntax:
+                src: [
+                    'assets/dependencies/SyntaxHighlighter/scripts/XRegExp.js',
+                    'assets/dependencies/SyntaxHighlighter/scripts/shCore.js',
+                    'assets/dependencies/SyntaxHighlighter/scripts/shBrushJScript.js'
+                ]
+                dest: 'assets/compiled/syntax.js'
+        concat_css:
+            syntax:
+                src: ['assets/dependencies/SyntaxHighlighter/styles/shCore.css', 'assets/dependencies/SyntaxHighlighter/styles/shCoreDefault.css']
+                dest: 'assets/compiled/syntax.css'
         notify_hooks:
             options:
                 enabled: true
@@ -40,6 +56,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-contrib-less'
     grunt.loadNpmTasks 'grunt-contrib-watch'
     grunt.loadNpmTasks 'grunt-contrib-concat'
+    grunt.loadNpmTasks 'grunt-concat-css'
     grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
