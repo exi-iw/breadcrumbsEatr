@@ -317,42 +317,44 @@
                             o.dropdownWrapper.trigger("hide.#{ pluginName }") 
 
             # bind resize event to the window
-            o.browserWindow.on o.resizeKey, ->
-                current = $ this
-
-                crumbHeights = o.el
-                    .children('li')
-                    .map( ->
-                        return ($ this).outerHeight true
-                    )
-                    .get()
-
-                o.optimalCrumbHeight = _.max crumbHeights
-
-                if o.optimalCrumbHeight isnt o.el.height()
-                    o.el
-                        .addClass(o.opts.wrappedClass)
-                        .trigger "compress.#{ pluginName }"
-
-                if o.windowWidth isnt o.browserWindow.width()
-                    if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
-                        o.el
-                            .addClass(o.opts.wrappedClass)
-                            .trigger "compress.#{ pluginName }"
-                    else
-                        o.el
-                            .removeClass(o.opts.wrappedClass)
-                            .trigger "decompress.#{ pluginName }"
-
-                    o.windowWidth = o.browserWindow.width()
-
-                return null
+            o.browserWindow.on o.resizeKey, o.resize
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
             # trigger the resize event after the plugin has loaded
             o.browserWindow.trigger o.resizeKey
+
+        o.resize = (e) ->
+            current = $ this
+
+            crumbHeights = o.el
+                .children('li')
+                .map( ->
+                    return ($ this).outerHeight true
+                )
+                .get()
+
+            o.optimalCrumbHeight = _.max crumbHeights
+
+            if o.optimalCrumbHeight isnt o.el.height()
+                o.el
+                    .addClass(o.opts.wrappedClass)
+                    .trigger "compress.#{ pluginName }"
+
+            if o.windowWidth isnt o.browserWindow.width()
+                if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
+                    o.el
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
+                else
+                    o.el
+                        .removeClass(o.opts.wrappedClass)
+                        .trigger "decompress.#{ pluginName }"
+
+                o.windowWidth = o.browserWindow.width()
+
+            return null
 
         o.getChildrenWidth = ->
             totalWidth = 0
