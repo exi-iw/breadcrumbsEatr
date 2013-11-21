@@ -10,7 +10,6 @@
     pluginName = 'ezBreadcrumbs'
     defaults =
         activeClass:            'active'
-        debounceTime:           200
         dropdownWrapperClass:   "#{ pluginName.toLowerCase() }-dropdown-wrapper"
         enhanceAnimation:       true
         exposeItems:            false
@@ -32,6 +31,9 @@
             onBeforeHide: (obj) ->
             onHide:       (obj) ->
             onAfterHide:  (obj) ->
+        throttleResize:
+            enable: false
+            time:   200
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
