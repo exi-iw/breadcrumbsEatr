@@ -11,7 +11,7 @@
 
     ($ '#basic-usage')
         .find('.breadcrumb')
-        .responsiveBreadcrumbs()
+        .ezBreadcrumbs()
 
     # always return null
     return null
