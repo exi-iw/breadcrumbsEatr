@@ -10,6 +10,9 @@
     pluginName = 'ezBreadcrumbs'
     defaults =
         activeClass:            'active'
+        debounceResize:
+            enabled: false
+            time:    200
         dropdownWrapperClass:   "#{ pluginName.toLowerCase() }-dropdown-wrapper"
         enhanceAnimation:       true
         exposeItems:            false
@@ -30,9 +33,6 @@
             onBeforeHide: (obj) ->
             onHide:       (obj) ->
             onAfterHide:  (obj) ->
-        throttleResize:
-            enable: false
-            time:   200
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
@@ -143,7 +143,8 @@
                 .hide()
                 .appendTo o.documentBody
 
-            o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
+            # debounce the resize function if o.opts.debounceResize.enabled is set to true
+            o.resize = _.debounce(o.resize, o.opts.debounceResize.time) if o.opts.debounceResize.enabled
 
             # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
