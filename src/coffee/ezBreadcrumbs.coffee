@@ -364,7 +364,7 @@
             return totalWidth
 
         o.generateRandomKey = ->
-            return "ez_#{ Math.random().toString(36).substring(7) }"
+            return "ezB_#{ Math.random().toString(36).substring(7) }"
 
         _this.destroy = ->
             o.opts.onDestroy(_this) if $.isFunction(o.opts.onDestroy)
