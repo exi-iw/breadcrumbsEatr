@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete09@gmail.com>
  * Licensed under MIT
- * Version 1.0.1
+ * Version 1.0.2
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -185,6 +185,9 @@
                     # append the hiddenItems in the holder's child ul
                     dropdownList.append hiddenItems
 
+                    # add wrapped class to the element if it does not exist
+                    current.addClass(o.opts.wrappedClass) unless current.hasClass(o.opts.wrappedClass)
+
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
@@ -236,6 +239,9 @@
 
                             # delete the reference since the holder element have been remove already
                             holder = null
+
+                            # remove wrapped class to the element if it exists
+                            current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
 
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
@@ -339,19 +345,13 @@
             o.optimalCrumbHeight = _.max crumbHeights
 
             if o.optimalCrumbHeight isnt o.el.height()
-                o.el
-                    .addClass(o.opts.wrappedClass)
-                    .trigger "compress.#{ pluginName }"
+                o.el.trigger "compress.#{ pluginName }"
 
             if o.windowWidth isnt o.browserWindow.width()
                 if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
-                    o.el
-                        .addClass(o.opts.wrappedClass)
-                        .trigger "compress.#{ pluginName }"
+                    o.el.trigger("compress.#{ pluginName }")
                 else
-                    o.el
-                        .removeClass(o.opts.wrappedClass)
-                        .trigger "decompress.#{ pluginName }"
+                    o.el.trigger("decompress.#{ pluginName }")
 
                 o.windowWidth = o.browserWindow.width()
 
