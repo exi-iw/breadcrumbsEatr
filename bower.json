@@ -1,7 +1,7 @@
 {
-  "name": "responsive-breadcrumbs",
-  "version": "1.0.0-beta",
-  "homepage": "https://github.com/exi-iw/responsive-breadcrumbs",
+  "name": "ezBreadcrumbs",
+  "version": "1.0.2",
+  "homepage": "https://github.com/exi-iw/ezBreadcrumbs",
   "authors": [
     "Exequiel Navarrete <exequiel.navarrete@ninthdesign.com>"
   ],
