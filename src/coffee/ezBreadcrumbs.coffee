@@ -11,6 +11,7 @@
     defaults =
         activeClass:            'active'
         debounceTime:           200
+        dropdownWrapperClass:   "#{ pluginName.toLowerCase() }-dropdown-wrapper"
         enhanceAnimation:       true
         exposeItems:            false
         fixIEResize:            false
@@ -134,7 +135,7 @@
             o.el.addClass o.opts.wrapperClass
 
             # create the dropdown wrapper
-            o.dropdownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ pluginName.toLowerCase() }-dropdown-wrapper\"><ul class=\"#{ o.opts.holder.listClass } clearfix\" /></div>")
+            o.dropdownWrapper = ($ "<div id=\"#{ o.pluginKey }\" class=\"#{ o.opts.dropdownWrapperClass }\"><ul class=\"#{ o.opts.holder.listClass } clearfix\" /></div>")
 
             # append the dropdown wrapper to the body tag
             o.dropdownWrapper
