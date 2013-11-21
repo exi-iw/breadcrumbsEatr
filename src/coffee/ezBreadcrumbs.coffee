@@ -352,16 +352,17 @@
                 .find(".#{ o.opts.holder.class }")
                 .offset()
 
-            # compute the right offset of the dropdownWrapper
-            rightOffset = current.width() - (o.dropdownWrapper.outerWidth() + holderOffset.left)
+            if typeof holderOffset isnt "undefined"
+                # compute the right offset of the dropdownWrapper
+                rightOffset = current.width() - (o.dropdownWrapper.outerWidth() + holderOffset.left)
 
-            dropdownOffset =
-                top:  (o.el.offset().top + o.el.outerHeight())
-                left: 0
+                dropdownOffset =
+                    top:  (o.el.offset().top + o.el.outerHeight())
+                    left: 0
 
-            dropdownOffset.left = if holderOffset.left <= rightOffset then holderOffset.left else ((current.width() - o.dropdownWrapper.outerWidth()) / 2)
+                dropdownOffset.left = if holderOffset.left <= rightOffset then holderOffset.left else ((current.width() - o.dropdownWrapper.outerWidth()) / 2)
 
-            o.dropdownWrapper.css dropdownOffset
+                o.dropdownWrapper.css dropdownOffset
 
             return null
 
