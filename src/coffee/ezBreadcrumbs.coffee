@@ -1,5 +1,5 @@
 ###
- * EzBreadcrumbs - Turns breadcrumbs into a responsive one
+ * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete09@gmail.com>
  * Licensed under MIT
  * Version 1.0.0
