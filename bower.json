@@ -13,12 +13,12 @@
     "coffee",
     "less"
   ],
-  "main": "src/coffee/responsive.breadcrumbs.coffee",
+  "main": "src/coffee/ezBreadcrumbs.coffee",
   "scripts": [
-    "src/coffee/responsive.breadcrumbs.coffee"
+    "src/coffee/ezBreadcrumbs.coffee"
   ],
   "styles": [
-    "src/less/responsive.breadcrumbs.less"
+    "src/less/ezBreadcrumbs.less"
   ],
   "license": "MIT",
   "private": true,
