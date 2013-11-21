@@ -13,7 +13,6 @@
         dropdownWrapperClass:   "#{ pluginName.toLowerCase() }-dropdown-wrapper"
         enhanceAnimation:       true
         exposeItems:            false
-        fixIEResize:            false
         holder:
             class:      "#{ pluginName.toLowerCase() }-holder"
             hoverClass: "#{ pluginName.toLowerCase() }-holder-hovered"
