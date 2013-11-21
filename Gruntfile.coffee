@@ -48,7 +48,7 @@ module.exports = (grunt) ->
             options:
                 enabled: true
                 max_jshint_notifications: 5
-                title: "Responsive Breadcrumbs"
+                title: "ezBreadcrumbs"
 
     # Load the plugin that provides the "coffee", "less", "watch" task.
     grunt.loadNpmTasks 'grunt-contrib-coffee'
