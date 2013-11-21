@@ -253,15 +253,7 @@
                 # add the hover class to the holder element
                 ($ this).addClass o.opts.holder.hoverClass
 
-                ps = o.el
-                    .find(".#{ o.opts.holder.class }")
-                    .offset()
-
                 o.dropdownWrapper
-                    .css(
-                        top:  (o.el.offset().top + o.el.outerHeight())
-                        left: ps.left
-                    )
                     .stop(true, true)
                     .fadeIn
                         duration: o.opts.holderAnimation.showDuration
@@ -354,6 +346,22 @@
                     o.el.trigger("decompress.#{ pluginName }")
 
                 o.windowWidth = o.browserWindow.width()
+
+            # set the positioning of the dropdown menu
+            holderOffset = o.el
+                .find(".#{ o.opts.holder.class }")
+                .offset()
+
+            # compute the right offset of the dropdownWrapper
+            rightOffset = current.width() - (o.dropdownWrapper.outerWidth() + holderOffset.left)
+
+            dropdownOffset =
+                top:  (o.el.offset().top + o.el.outerHeight())
+                left: 0
+
+            dropdownOffset.left = if holderOffset.left <= rightOffset then holderOffset.left else ((current.width() - o.dropdownWrapper.outerWidth()) / 2)
+
+            o.dropdownWrapper.css dropdownOffset
 
             return null
 
