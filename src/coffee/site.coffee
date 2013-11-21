@@ -9,7 +9,7 @@
     mainContainer = $ '#main-container'
     mainContent   = $ '#main-content'
 
-    ($ '#basic-usage')
+    ($ '#usage')
         .find('.breadcrumb')
         .ezBreadcrumbs()
 
