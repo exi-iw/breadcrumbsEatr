@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete09@gmail.com>
  * Licensed under MIT
- * Version 1.0.0
+ * Version 1.0.1
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -10,11 +10,12 @@
     pluginName = 'ezBreadcrumbs'
     defaults =
         activeClass:            'active'
-        debounceTime:           200
+        debounceResize:
+            enabled: false
+            time:    200
         dropdownWrapperClass:   "#{ pluginName.toLowerCase() }-dropdown-wrapper"
         enhanceAnimation:       true
         exposeItems:            false
-        fixIEResize:            false
         holder:
             class:      "#{ pluginName.toLowerCase() }-holder"
             hoverClass: "#{ pluginName.toLowerCase() }-holder-hovered"
@@ -142,7 +143,8 @@
                 .hide()
                 .appendTo o.documentBody
 
-            o.resize = _.debounce(o.resize, o.opts.debounceTime) if o.opts.fixIEResize
+            # debounce the resize function if o.opts.debounceResize.enabled is set to true
+            o.resize = _.debounce(o.resize, o.opts.debounceResize.time) if o.opts.debounceResize.enabled
 
             # bind the element to a custom event named compress
             o.el.on "compress.#{ pluginName }", (e) ->
@@ -316,42 +318,44 @@
                             o.dropdownWrapper.trigger("hide.#{ pluginName }") 
 
             # bind resize event to the window
-            o.browserWindow.on o.resizeKey, ->
-                current = $ this
-
-                crumbHeights = o.el
-                    .children('li')
-                    .map( ->
-                        return ($ this).outerHeight true
-                    )
-                    .get()
-
-                o.optimalCrumbHeight = _.max crumbHeights
-
-                if o.optimalCrumbHeight isnt o.el.height()
-                    o.el
-                        .addClass(o.opts.wrappedClass)
-                        .trigger "compress.#{ pluginName }"
-
-                if o.windowWidth isnt o.browserWindow.width()
-                    if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
-                        o.el
-                            .addClass(o.opts.wrappedClass)
-                            .trigger "compress.#{ pluginName }"
-                    else
-                        o.el
-                            .removeClass(o.opts.wrappedClass)
-                            .trigger "decompress.#{ pluginName }"
-
-                    o.windowWidth = o.browserWindow.width()
-
-                return null
+            o.browserWindow.on o.resizeKey, o.resize
 
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
             # trigger the resize event after the plugin has loaded
             o.browserWindow.trigger o.resizeKey
+
+        o.resize = (e) ->
+            current = $ this
+
+            crumbHeights = o.el
+                .children('li')
+                .map( ->
+                    return ($ this).outerHeight true
+                )
+                .get()
+
+            o.optimalCrumbHeight = _.max crumbHeights
+
+            if o.optimalCrumbHeight isnt o.el.height()
+                o.el
+                    .addClass(o.opts.wrappedClass)
+                    .trigger "compress.#{ pluginName }"
+
+            if o.windowWidth isnt o.browserWindow.width()
+                if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
+                    o.el
+                        .addClass(o.opts.wrappedClass)
+                        .trigger "compress.#{ pluginName }"
+                else
+                    o.el
+                        .removeClass(o.opts.wrappedClass)
+                        .trigger "decompress.#{ pluginName }"
+
+                o.windowWidth = o.browserWindow.width()
+
+            return null
 
         o.getChildrenWidth = ->
             totalWidth = 0
