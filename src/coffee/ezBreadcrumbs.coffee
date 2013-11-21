@@ -160,7 +160,7 @@
 
                 # loop through the breadcrumb children starting from the element after the holder element until the element before the active element
                 holder
-                    .nextUntil(o.opts.activeClass)
+                    .nextUntil(".#{ o.opts.activeClass }")
                     .each ->
                         crumb = $ this
 
