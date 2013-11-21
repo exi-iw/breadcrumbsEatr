@@ -33,17 +33,7 @@ module.exports = (grunt) ->
                     'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
                 ]
                 dest: 'assets/compiled/libs.js'
-            syntax:
-                src: [
-                    'assets/dependencies/SyntaxHighlighter/scripts/XRegExp.js',
-                    'assets/dependencies/SyntaxHighlighter/scripts/shCore.js',
-                    'assets/dependencies/SyntaxHighlighter/scripts/shBrushJScript.js'
-                ]
-                dest: 'assets/compiled/syntax.js'
-        concat_css:
-            syntax:
-                src: ['assets/dependencies/SyntaxHighlighter/styles/shCore.css', 'assets/dependencies/SyntaxHighlighter/styles/shCoreDefault.css']
-                dest: 'assets/compiled/syntax.css'
+        # concat_css:
         notify_hooks:
             options:
                 enabled: true
@@ -59,6 +49,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
-    grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
+    grunt.registerTask 'default', ['concat', 'coffee', 'less', 'watch']
+    # grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
 
     grunt.task.run 'notify_hooks'

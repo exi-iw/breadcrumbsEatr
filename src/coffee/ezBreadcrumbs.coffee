@@ -1,8 +1,8 @@
 ###
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
- * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete09@gmail.com>
+ * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.0.2
+ * Version 1.0.3
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -160,7 +160,7 @@
 
                 # loop through the breadcrumb children starting from the element after the holder element until the element before the active element
                 holder
-                    .nextUntil(o.opts.activeClass)
+                    .nextUntil(".#{ o.opts.activeClass }")
                     .each ->
                         crumb = $ this
 
@@ -253,15 +253,7 @@
                 # add the hover class to the holder element
                 ($ this).addClass o.opts.holder.hoverClass
 
-                ps = o.el
-                    .find(".#{ o.opts.holder.class }")
-                    .offset()
-
                 o.dropdownWrapper
-                    .css(
-                        top:  (o.el.offset().top + o.el.outerHeight())
-                        left: ps.left
-                    )
                     .stop(true, true)
                     .fadeIn
                         duration: o.opts.holderAnimation.showDuration
@@ -354,6 +346,23 @@
                     o.el.trigger("decompress.#{ pluginName }")
 
                 o.windowWidth = o.browserWindow.width()
+
+            # set the positioning of the dropdown menu
+            holderOffset = o.el
+                .find(".#{ o.opts.holder.class }")
+                .offset()
+
+            if typeof holderOffset isnt "undefined"
+                # compute the right offset of the dropdownWrapper
+                rightOffset = current.width() - (o.dropdownWrapper.outerWidth() + holderOffset.left)
+
+                dropdownOffset =
+                    top:  (o.el.offset().top + o.el.outerHeight())
+                    left: 0
+
+                dropdownOffset.left = if holderOffset.left <= rightOffset then holderOffset.left else ((current.width() - o.dropdownWrapper.outerWidth()) / 2)
+
+                o.dropdownWrapper.css dropdownOffset
 
             return null
 

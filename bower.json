@@ -1,7 +1,7 @@
 {
-  "name": "responsive-breadcrumbs",
-  "version": "1.0.0-beta",
-  "homepage": "https://github.com/exi-iw/responsive-breadcrumbs",
+  "name": "ezBreadcrumbs",
+  "version": "1.0.3",
+  "homepage": "https://github.com/exi-iw/ezBreadcrumbs",
   "authors": [
     "Exequiel Navarrete <exequiel.navarrete@ninthdesign.com>"
   ],
@@ -9,16 +9,16 @@
   "keywords": [
     "breadcrumbs",
     "responsive",
-    "responsive-breadcrumbs",
+    "responsive breadcrumbs",
     "coffee",
     "less"
   ],
-  "main": "src/coffee/responsive.breadcrumbs.coffee",
+  "main": "src/coffee/ezBreadcrumbs.coffee",
   "scripts": [
-    "src/coffee/responsive.breadcrumbs.coffee"
+    "src/coffee/ezBreadcrumbs.coffee"
   ],
   "styles": [
-    "src/less/responsive.breadcrumbs.less"
+    "src/less/ezBreadcrumbs.less"
   ],
   "license": "MIT",
   "private": true,
