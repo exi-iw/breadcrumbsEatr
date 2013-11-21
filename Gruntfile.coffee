@@ -6,7 +6,7 @@ module.exports = (grunt) ->
         coffee:
             common:
                 files:
-                    'assets/js/responsive.breadcrumbs.js': 'src/coffee/responsive.breadcrumbs.coffee'
+                    'assets/js/ezBreadcrumbs.js': 'src/coffee/ezBreadcrumbs.coffee'
                     'assets/js/site.js': 'src/coffee/site.coffee'
                 options:
                     bare: true
@@ -14,13 +14,13 @@ module.exports = (grunt) ->
             common:
                 files:
                     'assets/css/site.css': 'src/less/site.less'
-                    'assets/css/responsive.breadcrumbs.css': 'src/less/responsive.breadcrumbs.less'
+                    'assets/css/ezBreadcrumbs.css': 'src/less/ezBreadcrumbs.less'
         watch:
             coffee:
-                files: ['src/coffee/site.coffee', 'src/coffee/responsive.breadcrumbs.coffee']
+                files: ['src/coffee/site.coffee', 'src/coffee/ezBreadcrumbs.coffee']
                 tasks: ['coffee']
             less:
-                files: ['src/less/site.less', 'src/less/responsive.breadcrumbs.less']
+                files: ['src/less/site.less', 'src/less/ezBreadcrumbs.less']
                 tasks: ['less']
         concat:
             rwd:
@@ -59,6 +59,6 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
-    grunt.registerTask 'default', ['concat', 'watch']
+    grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
 
     grunt.task.run 'notify_hooks'

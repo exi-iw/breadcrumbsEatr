@@ -1,5 +1,5 @@
 ###
- * Responsive Breadcrumbs - Turns breadcrumbs into a responsive one
+ * EzBreadcrumbs - Turns breadcrumbs into a responsive one
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete09@gmail.com>
  * Licensed under MIT
  * Version 1.0.0
@@ -7,7 +7,7 @@
 (($, window, document, undefined_) ->
     "use strict"
 
-    pluginName = 'responsiveBreadcrumbs'
+    pluginName = 'ezBreadcrumbs'
     defaults =
         activeClass:            'active'
         debounceTime:           200
@@ -44,7 +44,7 @@
         onAfterLoad:            (obj) ->
         onDestroy:              (obj) ->
 
-    ResponsiveBreadcrumbs = (el, options) ->
+    EzBreadcrumbs = (el, options) ->
         o         = ($ el).data '_obj', {}
         _this     = this
         metadata  = ($ el).data "#{ pluginName.toLowerCase() }-options"
@@ -402,6 +402,6 @@
 
     $.fn[pluginName] = (options) ->
         @each ->
-            $.data this, pluginName, new ResponsiveBreadcrumbs(this, options) unless $.data(this, pluginName)
+            $.data this, pluginName, new EzBreadcrumbs(this, options) unless $.data(this, pluginName)
 
 ) jQuery, window, document
