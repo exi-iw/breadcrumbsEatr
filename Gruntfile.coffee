@@ -49,6 +49,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
-    grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
+    grunt.registerTask 'default', ['concat', 'coffee', 'less', 'watch']
+    # grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
 
     grunt.task.run 'notify_hooks'
