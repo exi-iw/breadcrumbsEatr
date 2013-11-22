@@ -188,6 +188,9 @@
                     # add wrapped class to the element if it does not exist
                     current.addClass(o.opts.wrappedClass) unless current.hasClass(o.opts.wrappedClass)
 
+                    # set the state to compressed
+                    o.setState('compressed') unless _this.isCompressed()
+
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
@@ -242,6 +245,9 @@
 
                             # remove wrapped class to the element if it exists
                             current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
+
+                            # set the state to decompressed
+                            o.setState('decompressed') if _this.isCompressed()
 
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
@@ -378,6 +384,9 @@
 
         o.generateRandomKey = ->
             return "ezB_#{ Math.random().toString(36).substring(7) }"
+
+        o.setState = (state) ->
+            o.el.data "#{ pluginName.toLowerCase() }-state", state
 
         _this.getState = ->
             status = o.el.data "#{ pluginName.toLowerCase() }-state"
