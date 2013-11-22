@@ -37,16 +37,6 @@ module.exports = (grunt) ->
                     'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
                 ]
                 dest: 'assets/compiled/libs.js'
-        qunit:
-            all:
-                options:
-                    urls: ['http://localhost:3000/tests/index.html']
-        connect:
-            server:
-                options:
-                    port: 3000
-                    base: '.'
-        # concat_css:
         notify_hooks:
             options:
                 enabled: true
@@ -58,16 +48,9 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-contrib-less'
     grunt.loadNpmTasks 'grunt-contrib-watch'
     grunt.loadNpmTasks 'grunt-contrib-concat'
-    grunt.loadNpmTasks 'grunt-concat-css'
-    grunt.loadNpmTasks 'grunt-contrib-connect'
-    grunt.loadNpmTasks 'grunt-contrib-qunit'
     grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
     grunt.registerTask 'default', ['concat', 'coffee', 'less', 'watch']
-    # grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
-
-    # Testing Tasks
-    grunt.registerTask 'test', ['connect', 'qunit']
 
     grunt.task.run 'notify_hooks'

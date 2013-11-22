@@ -7,10 +7,7 @@
     html          = $ document.documentElement
     body          = $ document.body
 
-    # set the element #qunit-fixture if port 3000 is used. if other than 3000 use the test breadcrumb element.
-    # port 3000 = grunt qunit testing
-    # port other than 3000 = web based qunit testing
-    testElement = if location.port is '3000' then ($ '#qunit-fixture').find('.breadcrumb') else ($ '#test-breadcrumb').find '.breadcrumb'
+    testElement = ($ '#test-breadcrumb').find '.breadcrumb'
 
     children    = testElement.children 'li'
 
@@ -43,9 +40,6 @@
                 equal optimalCrumbHeight, testElement.height()
 
         status: (e) ->
-            current = $ this
-
-            console.log testElement
             console.log "Test Element Width: #{ testElement.width() }. Element should wrap/unwrap on #{ maxWidth }"
 
             test "check breadcrumb status on width #{ testElement.width() }", ->
