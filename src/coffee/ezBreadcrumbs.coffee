@@ -210,18 +210,31 @@
                 if hiddenItems.length > 0
                     hiddenItems   = $ hiddenItems.get().reverse()
                     releaseItems  = []
-                    childrenWidth = o.getChildrenWidth()
+                    childrenWidth = 0
 
-                    hiddenItems.each ->
-                        crumb = $ this
-                        width = crumb.data "#{ pluginName.toLowerCase() }-width"
+                    if hiddenItems.length is 1
+                        childrenWidth = o.getChildrenWidth(true)
 
-                        if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
-                            releaseItems.unshift(crumb.detach().get(0))
+                        itemWidth = hiddenItems.data "#{ pluginName.toLowerCase() }-width"
 
-                            childrenWidth += width
-                        else
-                            return false
+                        if typeof itemWidth isnt "undefined" and (childrenWidth + itemWidth) <= current.width()
+                            releaseItems.unshift(hiddenItems.detach().get(0))
+
+                            childrenWidth += itemWidth
+
+                    else
+                        childrenWidth = o.getChildrenWidth()
+
+                        hiddenItems.each ->
+                            crumb = $ this
+                            width = crumb.data "#{ pluginName.toLowerCase() }-width"
+
+                            if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
+                                releaseItems.unshift(crumb.detach().get(0))
+
+                                childrenWidth += width
+                            else
+                                return false
 
                     if releaseItems.length > 0
                         # trigger first the beforeDecompress callback
@@ -374,13 +387,15 @@
 
             return null
 
-        o.getChildrenWidth = ->
+        o.getChildrenWidth = (includeWrapper = false) ->
             totalWidth = 0
+            filter     = o.el.children()
+            selected   = null
 
-            o.el
-                .children()
-                .each ->
-                    totalWidth += ($ this).outerWidth(true)
+            selected = if includeWrapper then filter.filter(":not(.#{ o.opts.holder.class })") else filter
+
+            selected.each ->
+                totalWidth += ($ this).outerWidth(true)
 
             return totalWidth
 
