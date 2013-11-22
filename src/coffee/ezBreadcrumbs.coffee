@@ -390,9 +390,9 @@
             o.el.data o.stateKey, state
 
         _this.getState = ->
-            status = o.el.data o.stateKey
+            state = o.el.data o.stateKey
 
-            return if typeof status is "undefined" then 'decompressed' else status
+            return if typeof state is "undefined" then 'decompressed' else status
 
         _this.isCompressed = ->
             return if _this.getState() is 'compressed' then true else false
