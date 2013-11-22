@@ -7,7 +7,8 @@
     html          = $ document.documentElement
     body          = $ document.body
 
-    testElement = ($ '#test-breadcrumb').find '.breadcrumb'
+    testElement = if location.port is '3000' then ($ '#qunit-fixture').find('.breadcrumb') else ($ '#test-breadcrumb').find '.breadcrumb'
+
     children    = testElement.children 'li'
 
     crumbWidths = children
