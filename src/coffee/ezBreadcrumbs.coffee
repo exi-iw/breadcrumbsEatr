@@ -144,6 +144,9 @@
                 .hide()
                 .appendTo o.documentBody
 
+            # set the starting state to decompressed
+            o.setState 'decompressed'
+
             # debounce the resize function if o.opts.debounceResize.enabled is set to true
             o.resize = _.debounce(o.resize, o.opts.debounceResize.time) if o.opts.debounceResize.enabled
 
