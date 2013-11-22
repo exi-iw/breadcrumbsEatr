@@ -8,6 +8,7 @@ module.exports = (grunt) ->
                 files:
                     'assets/js/ezBreadcrumbs.js': 'src/coffee/ezBreadcrumbs.coffee'
                     'assets/js/site.js': 'src/coffee/site.coffee'
+                    'tests/js/ezBreadcrumbs-test.js': 'tests/coffee/ezBreadcrumbs-test.coffee'
                 options:
                     bare: true
         less:
@@ -17,7 +18,7 @@ module.exports = (grunt) ->
                     'assets/css/ezBreadcrumbs.css': 'src/less/ezBreadcrumbs.less'
         watch:
             coffee:
-                files: ['src/coffee/site.coffee', 'src/coffee/ezBreadcrumbs.coffee']
+                files: ['src/coffee/site.coffee', 'src/coffee/ezBreadcrumbs.coffee', 'tests/coffee/ezBreadcrumbs-test.coffee']
                 tasks: ['coffee']
             less:
                 files: ['src/less/site.less', 'src/less/ezBreadcrumbs.less']
