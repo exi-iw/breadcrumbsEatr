@@ -351,7 +351,8 @@
             if o.windowWidth isnt o.browserWindow.width()
                 if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
                     o.el.trigger("compress.#{ pluginName }")
-                else
+
+                if o.browserWindow.width() > o.windowWidth
                     o.el.trigger("decompress.#{ pluginName }")
 
                 o.windowWidth = o.browserWindow.width()
