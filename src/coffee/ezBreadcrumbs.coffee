@@ -115,7 +115,6 @@
             o.pluginKey = o.generateRandomKey()
 
             # generate random key for resize event to prevent event namespace conflicts
-            o.stateKey  = "#{ pluginName.toLowerCase() }-state"
             o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
             # plugin keys ::end
 
@@ -390,12 +389,12 @@
             return "ezB_#{ Math.random().toString(36).substring(7) }"
 
         o.setState = (state) ->
-            o.el.data o.stateKey, state
+            o.state = state
+
+            return null
 
         _this.getState = ->
-            state = o.el.data o.stateKey
-
-            return if typeof state is "undefined" then 'decompressed' else status
+            return if typeof o.state is "undefined" then 'decompressed' else o.state
 
         _this.isCompressed = ->
             return if _this.getState() is 'compressed' then true else false
