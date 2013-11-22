@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.0.3
+ * Version 1.0.4
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -143,6 +143,9 @@
                 .hide()
                 .appendTo o.documentBody
 
+            # set the starting state to decompressed
+            o.setState 'decompressed'
+
             # debounce the resize function if o.opts.debounceResize.enabled is set to true
             o.resize = _.debounce(o.resize, o.opts.debounceResize.time) if o.opts.debounceResize.enabled
 
@@ -188,6 +191,9 @@
                     # add wrapped class to the element if it does not exist
                     current.addClass(o.opts.wrappedClass) unless current.hasClass(o.opts.wrappedClass)
 
+                    # set the state to compressed
+                    o.setState('compressed') unless _this.isCompressed()
+
                     # trigger the afterCompress callback
                     o.opts.onAfterCompress(_this) if $.isFunction(o.opts.onAfterCompress)
 
@@ -204,18 +210,31 @@
                 if hiddenItems.length > 0
                     hiddenItems   = $ hiddenItems.get().reverse()
                     releaseItems  = []
-                    childrenWidth = o.getChildrenWidth()
+                    childrenWidth = 0
 
-                    hiddenItems.each ->
-                        crumb = $ this
-                        width = crumb.data "#{ pluginName.toLowerCase() }-width"
+                    if hiddenItems.length is 1
+                        childrenWidth = o.getChildrenWidth(true)
 
-                        if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
-                            releaseItems.unshift(crumb.detach().get(0))
+                        itemWidth = hiddenItems.data "#{ pluginName.toLowerCase() }-width"
 
-                            childrenWidth += width
-                        else
-                            return false
+                        if typeof itemWidth isnt "undefined" and (childrenWidth + itemWidth) <= current.width()
+                            releaseItems.unshift(hiddenItems.detach().get(0))
+
+                            childrenWidth += itemWidth
+
+                    else
+                        childrenWidth = o.getChildrenWidth()
+
+                        hiddenItems.each ->
+                            crumb = $ this
+                            width = crumb.data "#{ pluginName.toLowerCase() }-width"
+
+                            if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
+                                releaseItems.unshift(crumb.detach().get(0))
+
+                                childrenWidth += width
+                            else
+                                return false
 
                     if releaseItems.length > 0
                         # trigger first the beforeDecompress callback
@@ -242,6 +261,9 @@
 
                             # remove wrapped class to the element if it exists
                             current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
+
+                            # set the state to decompressed
+                            o.setState('decompressed') if _this.isCompressed()
 
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
@@ -340,10 +362,9 @@
                 o.el.trigger "compress.#{ pluginName }"
 
             if o.windowWidth isnt o.browserWindow.width()
-                if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
-                    o.el.trigger("compress.#{ pluginName }")
-                else
-                    o.el.trigger("decompress.#{ pluginName }")
+                o.el.trigger("compress.#{ pluginName }") if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
+
+                o.el.trigger("decompress.#{ pluginName }") if o.browserWindow.width() > o.windowWidth
 
                 o.windowWidth = o.browserWindow.width()
 
@@ -366,18 +387,31 @@
 
             return null
 
-        o.getChildrenWidth = ->
+        o.getChildrenWidth = (includeWrapper = false) ->
             totalWidth = 0
+            filter     = o.el.children()
+            selected   = null
 
-            o.el
-                .children()
-                .each ->
-                    totalWidth += ($ this).outerWidth(true)
+            selected = if includeWrapper then filter.filter(":not(.#{ o.opts.holder.class })") else filter
+
+            selected.each ->
+                totalWidth += ($ this).outerWidth(true)
 
             return totalWidth
 
         o.generateRandomKey = ->
             return "ezB_#{ Math.random().toString(36).substring(7) }"
+
+        o.setState = (state) ->
+            o.state = state
+
+            return null
+
+        _this.getState = ->
+            return if typeof o.state is "undefined" then 'decompressed' else o.state
+
+        _this.isCompressed = ->
+            return if _this.getState() is 'compressed' then true else false
 
         _this.destroy = ->
             o.opts.onDestroy(_this) if $.isFunction(o.opts.onDestroy)

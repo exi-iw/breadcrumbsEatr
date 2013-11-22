@@ -8,6 +8,7 @@ module.exports = (grunt) ->
                 files:
                     'assets/js/ezBreadcrumbs.js': 'src/coffee/ezBreadcrumbs.coffee'
                     'assets/js/site.js': 'src/coffee/site.coffee'
+                    'tests/js/ezBreadcrumbs-test.js': 'tests/coffee/ezBreadcrumbs-test.coffee'
                 options:
                     bare: true
         less:
@@ -17,11 +18,14 @@ module.exports = (grunt) ->
                     'assets/css/ezBreadcrumbs.css': 'src/less/ezBreadcrumbs.less'
         watch:
             coffee:
-                files: ['src/coffee/site.coffee', 'src/coffee/ezBreadcrumbs.coffee']
+                files: ['src/coffee/site.coffee', 'src/coffee/ezBreadcrumbs.coffee', 'tests/coffee/ezBreadcrumbs-test.coffee']
                 tasks: ['coffee']
             less:
                 files: ['src/less/site.less', 'src/less/ezBreadcrumbs.less']
                 tasks: ['less']
+            qunit:
+                files: ['tests/coffee/ezBreadcrumbs-test.coffee', 'tests/index.html']
+                tasks: ['connect', 'qunit']
         concat:
             rwd:
                 src: ['assets/dependencies/modernizr/modernizr.js', 'assets/dependencies/respond/respond.min.js']
@@ -33,7 +37,6 @@ module.exports = (grunt) ->
                     'assets/dependencies/bootstrap/dist/js/bootstrap.min.js',
                 ]
                 dest: 'assets/compiled/libs.js'
-        # concat_css:
         notify_hooks:
             options:
                 enabled: true
@@ -45,11 +48,9 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-contrib-less'
     grunt.loadNpmTasks 'grunt-contrib-watch'
     grunt.loadNpmTasks 'grunt-contrib-concat'
-    grunt.loadNpmTasks 'grunt-concat-css'
     grunt.loadNpmTasks 'grunt-notify'
 
     # Default Tasks
     grunt.registerTask 'default', ['concat', 'coffee', 'less', 'watch']
-    # grunt.registerTask 'default', ['concat', 'concat_css', 'coffee', 'less', 'watch']
 
     grunt.task.run 'notify_hooks'
