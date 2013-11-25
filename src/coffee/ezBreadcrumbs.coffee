@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.0.4
+ * Version 1.0.5
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -212,29 +212,20 @@
                     releaseItems  = []
                     childrenWidth = 0
 
-                    if hiddenItems.length is 1
-                        childrenWidth = o.getChildrenWidth(true)
+                    childrenWidth = if hiddenItems.length is 1 then o.getChildrenWidth(true) else o.getChildrenWidth()
 
-                        itemWidth = hiddenItems.data "#{ pluginName.toLowerCase() }-width"
+                    hiddenItems.each ->
+                        crumb = $ this
+                        width = crumb.data "#{ pluginName.toLowerCase() }-width"
 
-                        if typeof itemWidth isnt "undefined" and (childrenWidth + itemWidth) <= current.width()
-                            releaseItems.unshift(hiddenItems.detach().get(0))
+                        if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
+                            releaseItems.unshift(crumb.detach().get(0))
 
-                            childrenWidth += itemWidth
+                            childrenWidth += width
+                        else
+                            return false
 
-                    else
-                        childrenWidth = o.getChildrenWidth()
-
-                        hiddenItems.each ->
-                            crumb = $ this
-                            width = crumb.data "#{ pluginName.toLowerCase() }-width"
-
-                            if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
-                                releaseItems.unshift(crumb.detach().get(0))
-
-                                childrenWidth += width
-                            else
-                                return false
+                    console.log releaseItems
 
                     if releaseItems.length > 0
                         # trigger first the beforeDecompress callback
