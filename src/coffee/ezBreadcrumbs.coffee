@@ -120,6 +120,7 @@
 
             # normalize events ::start
             o.hoverIn  = if Modernizr.touch then 'touchstart' else 'mouseenter'
+            o.click    = if Modernizr.touch then 'touchstart' else 'click'
             # normalize events ::end
 
             # set the widths of each elements ::start
@@ -276,6 +277,10 @@
 
                 e.preventDefault()
 
+            # delegate the click event for preventing default behavior
+            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.class } a", (e) ->
+                e.preventDefault()
+
             # bind custom event named close to close or hide the dropdown
             o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
                 current = $ this
@@ -299,10 +304,6 @@
 
             # delegate events for non-touch devices
             unless Modernizr.touch
-                # delegate the click event for preventing default behavior
-                o.el.on "click.#{ pluginName }", ".#{ o.opts.holder.class }", (e) ->
-                    e.preventDefault()
-
                 # delegate the mouseleave event for hoverOut to the holder element
                 o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
                     o.dropdownTimer = window.setTimeout( ->
