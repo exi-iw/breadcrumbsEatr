@@ -23,9 +23,6 @@ module.exports = (grunt) ->
             less:
                 files: ['src/less/site.less', 'src/less/ezBreadcrumbs.less']
                 tasks: ['less']
-            qunit:
-                files: ['tests/coffee/ezBreadcrumbs-test.coffee', 'tests/index.html']
-                tasks: ['connect', 'qunit']
         concat:
             rwd:
                 src: ['assets/dependencies/modernizr/modernizr.js', 'assets/dependencies/respond/respond.min.js']
