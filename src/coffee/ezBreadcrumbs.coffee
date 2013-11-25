@@ -225,8 +225,6 @@
                         else
                             return false
 
-                    console.log releaseItems
-
                     if releaseItems.length > 0
                         # trigger first the beforeDecompress callback
                         o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
