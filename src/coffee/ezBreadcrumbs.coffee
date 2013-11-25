@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.0.5
+ * Version 1.0.6
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -120,6 +120,7 @@
 
             # normalize events ::start
             o.hoverIn  = if Modernizr.touch then 'touchstart' else 'mouseenter'
+            o.click    = if Modernizr.touch then 'touchstart' else 'click'
             # normalize events ::end
 
             # set the widths of each elements ::start
@@ -225,8 +226,6 @@
                         else
                             return false
 
-                    console.log releaseItems
-
                     if releaseItems.length > 0
                         # trigger first the beforeDecompress callback
                         o.opts.onBeforeDecompress(_this) if $.isFunction(o.opts.onBeforeDecompress)
@@ -278,6 +277,10 @@
 
                 e.preventDefault()
 
+            # delegate the click event for preventing default behavior
+            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.class } a", (e) ->
+                e.preventDefault()
+
             # bind custom event named close to close or hide the dropdown
             o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
                 current = $ this
@@ -301,10 +304,6 @@
 
             # delegate events for non-touch devices
             unless Modernizr.touch
-                # delegate the click event for preventing default behavior
-                o.el.on "click.#{ pluginName }", ".#{ o.opts.holder.class }", (e) ->
-                    e.preventDefault()
-
                 # delegate the mouseleave event for hoverOut to the holder element
                 o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
                     o.dropdownTimer = window.setTimeout( ->
