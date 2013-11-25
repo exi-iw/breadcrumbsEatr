@@ -43,7 +43,7 @@
             console.log "Test Element Width: #{ testElement.width() }. Element should wrap/unwrap on #{ maxWidth }"
 
             test "check breadcrumb status on width #{ testElement.width() }", ->
-                if testElement.width() <= maxWidth
+                if testElement.width() < maxWidth
                     console.log "testing on window size less than or equal to #{ maxWidth }."
 
                     equal testElementData.getState(), 'compressed'
