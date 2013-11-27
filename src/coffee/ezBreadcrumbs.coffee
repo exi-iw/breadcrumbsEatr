@@ -307,7 +307,7 @@
                 # delegate the mouseleave event for hoverOut to the holder element
                 o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
                     o.dropdownTimer = window.setTimeout( ->
-                        o.dropdownWrapper.trigger "mouseleave.#{ pluginName }"
+                        o.dropdownWrapper.trigger "hide.#{ pluginName }"
                     , 500)
 
                 # bind the mouseenter event for hoverIn to the dropdownWrapper
