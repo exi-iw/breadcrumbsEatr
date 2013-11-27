@@ -249,6 +249,9 @@
                             # delete the reference since the holder element have been remove already
                             holder = null
 
+                            # hide the dropdownWrapper if it is visible
+                            o.dropdownWrapper.hide() if not o.dropdownWrapper.is(':hidden')
+
                             # remove wrapped class to the element if it exists
                             current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
 
