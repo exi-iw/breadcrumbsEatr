@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.0.6
+ * Version 1.0.7
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -249,6 +249,9 @@
                             # delete the reference since the holder element have been remove already
                             holder = null
 
+                            # hide the dropdownWrapper if it is visible
+                            o.dropdownWrapper.hide() if not o.dropdownWrapper.is(':hidden')
+
                             # remove wrapped class to the element if it exists
                             current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
 
@@ -307,7 +310,7 @@
                 # delegate the mouseleave event for hoverOut to the holder element
                 o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
                     o.dropdownTimer = window.setTimeout( ->
-                        o.dropdownWrapper.trigger "mouseleave.#{ pluginName }"
+                        o.dropdownWrapper.trigger "hide.#{ pluginName }"
                     , 500)
 
                 # bind the mouseenter event for hoverIn to the dropdownWrapper
@@ -348,8 +351,7 @@
 
             o.optimalCrumbHeight = _.max crumbHeights
 
-            if o.optimalCrumbHeight isnt o.el.height()
-                o.el.trigger "compress.#{ pluginName }"
+            o.el.trigger("compress.#{ pluginName }") if o.optimalCrumbHeight isnt o.el.height()
 
             if o.windowWidth isnt o.browserWindow.width()
                 o.el.trigger("compress.#{ pluginName }") if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
