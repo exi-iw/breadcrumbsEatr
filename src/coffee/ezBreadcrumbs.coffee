@@ -348,8 +348,7 @@
 
             o.optimalCrumbHeight = _.max crumbHeights
 
-            if o.optimalCrumbHeight isnt o.el.height()
-                o.el.trigger "compress.#{ pluginName }"
+            o.el.trigger("compress.#{ pluginName }") if o.optimalCrumbHeight isnt o.el.height()
 
             if o.windowWidth isnt o.browserWindow.width()
                 o.el.trigger("compress.#{ pluginName }") if o.browserWindow.width() < o.windowWidth and o.optimalCrumbHeight isnt o.el.height()
