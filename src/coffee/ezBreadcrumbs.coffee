@@ -336,8 +336,25 @@
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
-            # trigger the resize event after the plugin has loaded
-            o.browserWindow.trigger o.resizeKey
+            # initialize the compression timer variable
+            o.smartCompressionTimer = null
+
+            # trigger the resize event after the plugin has loaded and the element has no hidden parents
+            if not o.isParentsHidden()
+                o.browserWindow.trigger o.resizeKey
+            else
+                # check if the element's parents is not hidden anymore every 200ms
+                o.smartCompressionTimer = window.setInterval( ->
+                    unless o.isParentsHidden()
+                        # clear the interval
+                        window.clearInterval o.smartCompressionTimer
+
+                        # trigger the resize event after the plugin has loaded and the element has no hidden parents
+                        o.browserWindow.trigger o.resizeKey
+
+                        # immediately set to null after clearing timer to prevent memory leaks
+                        o.smartCompressionTimer = null
+                , 200)
 
         o.resize = (e) ->
             current = $ this
@@ -378,6 +395,11 @@
                 o.dropdownWrapper.css dropdownOffset
 
             return null
+
+        o.isParentsHidden = ->
+            o.hiddenParents = if typeof o.hiddenParents is "undefined" then o.el.parentsUntil('body', ':hidden') else o.hiddenParents.filter(':hidden')
+
+            return if o.hiddenParents.length > 0 then true else false
 
         o.getChildrenWidth = (includeWrapper = false) ->
             totalWidth = 0
