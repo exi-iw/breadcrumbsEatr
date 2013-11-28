@@ -312,7 +312,7 @@
                 o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
                     o.dropdownTimer = window.setTimeout( ->
                         o.dropdownWrapper.trigger "hide.#{ pluginName }"
-                    , 500)
+                    , o.opts.hoverTimeout)
 
                 # bind the mouseenter event for hoverIn to the dropdownWrapper
                 o.dropdownWrapper.on "mouseenter.#{ pluginName }", ->
@@ -355,7 +355,7 @@
 
                         # immediately set to null after clearing timer to prevent memory leaks
                         o.smartCompressionTimer = null
-                , 200)
+                , o.opts.smartCompressionTime)
 
         o.resize = (e) ->
             current = $ this
