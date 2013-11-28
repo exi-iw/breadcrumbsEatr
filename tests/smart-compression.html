@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--[if IE 7]>         <html lang="en" class="no-js lt-ie11 lt-ie10 ie ie7 lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" class="no-js lt-ie11 lt-ie10 ie ie8 lt-ie9"> <![endif]-->
+<!--[if IE 9 ]>        <html lang="en" class="no-js lt-ie11 lt-ie10 ie ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8" />
+        <title>ezBreadcrumbs | Exequiel Ceasar Navarrete</title>
+        <!-- <meta name="description" content="" /> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link rel="stylesheet" href="/assets/dependencies/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/assets/css/ezBreadcrumbs.css" />
+        <link rel="stylesheet" href="/assets/css/site.css" />
+        <link rel="stylesheet" href="/assets/dependencies/qunit/qunit/qunit.css" />
+
+        <script src="assets/compiled/rwd.js"></script>
+        <!--[if (gte IE 6)&(lte IE 8)]>
+        <script src="assets/js/selectivizr.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <!-- Main Container -->
+        <div id="main-container">
+            <header class="navbar navbar-inverse navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                        <h1 class="navbar-brand">
+                            <a href="/">EzBreadcrumbs</a>
+                        </h1>
+                    </div>
+
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="active">
+                                <a href="/">Home</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Container -->
+            <div id="container" class="container">
+                <!-- Content -->
+                <div id="content">
+                    <div id="inner-content" role="main">
+                        <div id="main-content">
+                            <section id="smart-compression-breadcrumb" class="container">
+                                <nav class="breadcrumbs">
+                                    <h2 class="hidden">Breadcrumbs</h2>
+                                   
+                                    <ol class="breadcrumb clearfix">
+                                        <li><a href="#">Home</a></li>
+                                        <li><a href="#">Mobile</a></li>
+                                        <li><a href="#">Support</a></li>
+                                        <li><a href="#">Videos</a></li>
+                                        <li><a href="#">Tutorials</a></li>
+                                        <li><a href="#">Samsung Galaxy Note II</a></li>
+                                        <li class="active"><a href="#">S Pen Apps</a></li>
+                                    </ol>
+                                </nav>
+                            </section>
+
+                            <div id="qunit"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content -->
+
+                <!-- Site Footer -->
+                <footer id="site-footer">
+                    <hr />
+                    <p>&copy; Exequiel Ceasar Navarrete 2013</p>
+                </footer>
+                <!-- Site Footer -->
+            </div>
+            <!-- Container -->
+        </div>
+        <!-- Main Container -->
+
+        <script src="/assets/compiled/libs.js"></script>
+        <script src="/assets/dependencies/qunit/qunit/qunit.js"></script>
+        <script src="/assets/js/ezBreadcrumbs.js"></script>
+        <script src="/tests/js/ezBreadcrumbs-test.js"></script>
+    </body>
+</html>
