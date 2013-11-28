@@ -336,8 +336,26 @@
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
+            untilBody = o.el.parentsUntil 'body'
+
+            o.smartCompressionTimer = window.setInterval( ->
+                hiddenParent = false
+
+                untilBody.each ->
+                    if ($ this).is ':hidden'
+                        hiddenParent = true
+
+                        return false
+
+                unless hiddenParent
+                    # trigger the resize event after the plugin has loaded
+                    o.browserWindow.trigger o.resizeKey
+
+                    window.clearInterval o.smartCompressionTimer
+            , 200)
+
             # trigger the resize event after the plugin has loaded
-            o.browserWindow.trigger o.resizeKey
+            # o.browserWindow.trigger o.resizeKey
 
         o.resize = (e) ->
             current = $ this
