@@ -336,18 +336,8 @@
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
-            untilBody = o.el.parentsUntil 'body'
-
             o.smartCompressionTimer = window.setInterval( ->
-                hiddenParent = false
-
-                untilBody.each ->
-                    if ($ this).is ':hidden'
-                        hiddenParent = true
-
-                        return false
-
-                unless hiddenParent
+                unless o.isParentsHidden()
                     # trigger the resize event after the plugin has loaded
                     o.browserWindow.trigger o.resizeKey
 
@@ -396,6 +386,19 @@
                 o.dropdownWrapper.css dropdownOffset
 
             return null
+
+        o.isParentsHidden = ->
+            hasHiddenParent = false
+            untilBody       = o.el.parentsUntil 'body'
+
+            untilBody.each ->
+                if ($ this).is ':hidden'
+                    hasHiddenParent = true
+
+                    # immediately return false if the breadcrumb has hidden parent to cancel the .each() loop
+                    return false
+
+            return hasHiddenParent
 
         o.getChildrenWidth = (includeWrapper = false) ->
             totalWidth = 0
