@@ -336,16 +336,25 @@
             # execute custom code after the plugin has loaded
             o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
-            o.smartCompressionTimer = window.setInterval( ->
-                unless o.isParentsHidden()
-                    # trigger the resize event after the plugin has loaded
-                    o.browserWindow.trigger o.resizeKey
+            # initialize the compression timer variable
+            o.smartCompressionTimer = null
 
-                    window.clearInterval o.smartCompressionTimer
-            , 200)
+            # trigger the resize event after the plugin has loaded and the element has no hidden parents
+            if not o.isParentsHidden()
+                o.browserWindow.trigger o.resizeKey
+            else
+                # check if the element's parents is not hidden anymore every 200ms
+                o.smartCompressionTimer = window.setInterval( ->
+                    unless o.isParentsHidden()
+                        # clear the interval
+                        window.clearInterval o.smartCompressionTimer
 
-            # trigger the resize event after the plugin has loaded
-            # o.browserWindow.trigger o.resizeKey
+                        # trigger the resize event after the plugin has loaded and the element has no hidden parents
+                        o.browserWindow.trigger o.resizeKey
+
+                        # immediately set to null after clearing timer to prevent memory leaks
+                        o.smartCompressionTimer = null
+                , 200)
 
         o.resize = (e) ->
             current = $ this
