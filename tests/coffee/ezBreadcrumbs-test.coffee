@@ -86,7 +86,7 @@
         console.log 'smart compression test'
 
         if browserWindow.width() > 640
-            console.error 'Browser Window must be at least 640 to conduct this test.'
+            console.error 'Browser Window must be less than or equal to 640 to conduct this test.'
         else 
             body.hide()
 
