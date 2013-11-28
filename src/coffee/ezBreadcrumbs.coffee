@@ -22,7 +22,6 @@
             listClass:  "#{ pluginName.toLowerCase() }-hidden-list"
             text:       '...'
         holderAnimation:
-            fade:         true
             showEasing:   'swing'
             hideEasing:   'swing'
             showDuration: 400
