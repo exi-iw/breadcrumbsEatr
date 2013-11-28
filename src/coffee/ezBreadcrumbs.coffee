@@ -96,7 +96,7 @@
                 return false
 
             # Extend options
-            o.opts = $.extend {}, defaults, options, metadata
+            o.opts = $.extend true, {}, defaults, options, metadata
 
             # execute custom code before the plugin process the elements.
             o.opts.onBeforeLoad(_this) if $.isFunction(o.opts.onBeforeLoad)
