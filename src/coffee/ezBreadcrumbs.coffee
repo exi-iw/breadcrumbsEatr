@@ -32,6 +32,7 @@
             onBeforeHide: (obj) ->
             onHide:       (obj) ->
             onAfterHide:  (obj) ->
+        hoverTimeout:           500
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
