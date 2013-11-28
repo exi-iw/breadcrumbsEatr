@@ -11,6 +11,21 @@ Basic Usage
 
 `$('#basic-usage').ezBreadcrumbs();`
 
+
+*Note:*
+-------
+To build the plugin you must have NodeJS, NPM, Grunt and Bower. Grunt and Bower depends on NodeJS and NPM so you must install these first. Grunt for compiling the plugin from coffee and less to js and css. Bower for installing the project's dependencies.
+
+From the Terminal/Command Line run the command: <br />
+SomeUser@Computer $ `npm install` <br />
+
+After running the `npm install` command run this: <br />
+SomeUser@Computer $ `bower install`
+
+Finally, execute this command: <br />
+SomeUser@Computer $ `grunt`
+
+
 Dependencies
 ------------
 
