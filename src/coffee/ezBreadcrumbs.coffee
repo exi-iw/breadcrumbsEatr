@@ -397,17 +397,9 @@
             return null
 
         o.isParentsHidden = ->
-            hasHiddenParent = false
-            untilBody       = o.el.parentsUntil 'body'
+            o.hiddenParents = if typeof o.hiddenParents is "undefined" then o.el.parentsUntil('body', ':hidden') else o.hiddenParents.filter(':hidden')
 
-            untilBody.each ->
-                if ($ this).is ':hidden'
-                    hasHiddenParent = true
-
-                    # immediately return false if the breadcrumb has hidden parent to cancel the .each() loop
-                    return false
-
-            return hasHiddenParent
+            return if o.hiddenParents.length > 0 then true else false
 
         o.getChildrenWidth = (includeWrapper = false) ->
             totalWidth = 0
