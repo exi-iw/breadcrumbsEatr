@@ -2,7 +2,7 @@
  * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.0.9
+ * Version 1.1.0
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -17,12 +17,11 @@
         enhanceAnimation:       true
         exposeItems:            false
         holder:
-            class:      "#{ pluginName.toLowerCase() }-holder"
+            klass:      "#{ pluginName.toLowerCase() }-holder"
             hoverClass: "#{ pluginName.toLowerCase() }-holder-hovered"
             listClass:  "#{ pluginName.toLowerCase() }-hidden-list"
             text:       '...'
         holderAnimation:
-            fade:         true
             showEasing:   'swing'
             hideEasing:   'swing'
             showDuration: 400
@@ -33,6 +32,8 @@
             onBeforeHide: (obj) ->
             onHide:       (obj) ->
             onAfterHide:  (obj) ->
+        hoverTimeout:           500
+        smartCompressionTime:   200
         wrapperClass:           "#{ pluginName.toLowerCase() }-wrapper"
         wrappedClass:           "#{ pluginName.toLowerCase() }-wrapped"
         onBeforeCompress:       (obj) ->
@@ -154,10 +155,10 @@
             o.el.on "compress.#{ pluginName }", (e) ->
                 current = $ this
                 items   = current.children 'li'
-                holder  = items.filter ".#{ o.opts.holder.class }"
+                holder  = items.filter ".#{ o.opts.holder.klass }"
 
                 if holder.length is 0
-                    holder = ($ "<li class=\"#{ o.opts.holder.class }\"><a href=\"#\">#{ o.opts.holder.text }</a></li>").insertAfter items.first()
+                    holder = ($ "<li class=\"#{ o.opts.holder.klass }\"><a href=\"#\">#{ o.opts.holder.text }</a></li>").insertAfter items.first()
 
                 # initialize an array for storage of the hidden items
                 hiddenItems = []
@@ -204,7 +205,7 @@
             # bind the element to a custom event named decompress
             o.el.on "decompress.#{ pluginName }", (e) ->
                 current      = $ this
-                holder       = current.find ".#{ o.opts.holder.class }"
+                holder       = current.find ".#{ o.opts.holder.klass }"
                 dropdownList = o.dropdownWrapper.children ".#{ o.opts.holder.listClass }"
                 hiddenItems  = dropdownList.find 'li'
 
@@ -262,7 +263,7 @@
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
             # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.class }", (e) ->
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
                 o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
 
                 # add the hover class to the holder element
@@ -281,7 +282,7 @@
                 e.preventDefault()
 
             # delegate the click event for preventing default behavior
-            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.class } a", (e) ->
+            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.klass } a", (e) ->
                 e.preventDefault()
 
             # bind custom event named close to close or hide the dropdown
@@ -300,7 +301,7 @@
 
                             # remove the hover class to the holder element
                             o.el
-                                .children(".#{ o.opts.holder.class }")
+                                .children(".#{ o.opts.holder.klass }")
                                 .removeClass o.opts.holder.hoverClass
 
                             o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
@@ -308,10 +309,10 @@
             # delegate events for non-touch devices
             unless Modernizr.touch
                 # delegate the mouseleave event for hoverOut to the holder element
-                o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.class }", ->
+                o.el.on "mouseleave.#{ pluginName }", ".#{ o.opts.holder.klass }", ->
                     o.dropdownTimer = window.setTimeout( ->
                         o.dropdownWrapper.trigger "hide.#{ pluginName }"
-                    , 500)
+                    , o.opts.hoverTimeout)
 
                 # bind the mouseenter event for hoverIn to the dropdownWrapper
                 o.dropdownWrapper.on "mouseenter.#{ pluginName }", ->
@@ -326,8 +327,8 @@
                     target    = $ e.target
                     wrapperId = o.dropdownWrapper.attr 'id'
 
-                    if (not target.is(".#{ o.opts.holder.class }") and not target.is("##{ wrapperId }")) and
-                        (target.parents(".#{ o.opts.holder.class }").length is 0 and target.parents("##{ wrapperId }").length is 0)
+                    if (not target.is(".#{ o.opts.holder.klass }") and not target.is("##{ wrapperId }")) and
+                        (target.parents(".#{ o.opts.holder.klass }").length is 0 and target.parents("##{ wrapperId }").length is 0)
                             o.dropdownWrapper.trigger("hide.#{ pluginName }") 
 
             # bind resize event to the window
@@ -354,7 +355,7 @@
 
                         # immediately set to null after clearing timer to prevent memory leaks
                         o.smartCompressionTimer = null
-                , 200)
+                , o.opts.smartCompressionTime)
 
         o.resize = (e) ->
             current = $ this
@@ -379,7 +380,7 @@
 
             # set the positioning of the dropdown menu
             holderOffset = o.el
-                .find(".#{ o.opts.holder.class }")
+                .find(".#{ o.opts.holder.klass }")
                 .offset()
 
             if typeof holderOffset isnt "undefined"
@@ -406,7 +407,7 @@
             filter     = o.el.children()
             selected   = null
 
-            selected = if includeWrapper then filter.filter(":not(.#{ o.opts.holder.class })") else filter
+            selected = if includeWrapper then filter.filter(":not(.#{ o.opts.holder.klass })") else filter
 
             selected.each ->
                 totalWidth += ($ this).outerWidth(true)
