@@ -1,6 +1,6 @@
 {
   "name": "ezBreadcrumbs",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "author": "Exequiel Ceasar S. Navarrete <exequiel.navarrete@ninthdesign.com>",
   "description": "jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.",
   "repository": {
