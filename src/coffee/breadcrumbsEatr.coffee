@@ -2,7 +2,7 @@
  * BreadcrumbsEatr - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.1.0
+ * Version 1.2.0
 ### 
 (($, window, document, undefined_) ->
     "use strict"
