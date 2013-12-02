@@ -223,6 +223,9 @@
                         if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
                             releaseItems.unshift(crumb.detach().get(0))
 
+                            # delete the reference since it does not correctly point it anymore the element
+                            crumb = null
+
                             childrenWidth += width
                         else
                             return false
