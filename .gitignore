@@ -6,9 +6,9 @@ assets/dependencies/*
 !assets/dependencies/.gitkeep
 assets/js/site.js
 assets/css/site.css
-assets/js/ezBreadcrumbs.js
-assets/css/ezBreadcrumbs.css
-tests/js/ezBreadcrumbs-test.js
+assets/js/breadcrumbsEatr.js
+assets/css/breadcrumbsEatr.css
+tests/js/breadcrumbsEatr-test.js
 
 
 ## ----------------

@@ -1,7 +1,7 @@
 {
-  "name": "ezBreadcrumbs",
-  "version": "1.1.0",
-  "homepage": "https://github.com/exi-iw/ezBreadcrumbs",
+  "name": "breadcrumbsEatr",
+  "version": "1.2.0",
+  "homepage": "https://github.com/exi-iw/breadcrumbsEatr",
   "authors": [
     "Exequiel Navarrete <exequiel.navarrete@ninthdesign.com>"
   ],
@@ -13,12 +13,12 @@
     "coffee",
     "less"
   ],
-  "main": "src/coffee/ezBreadcrumbs.coffee",
+  "main": "src/coffee/breadcrumbsEatr.coffee",
   "scripts": [
-    "src/coffee/ezBreadcrumbs.coffee"
+    "src/coffee/breadcrumbsEatr.coffee"
   ],
   "styles": [
-    "src/less/ezBreadcrumbs.less"
+    "src/less/breadcrumbsEatr.less"
   ],
   "license": "MIT",
   "private": true,

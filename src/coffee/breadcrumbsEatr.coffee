@@ -1,13 +1,13 @@
 ###
- * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
+ * BreadcrumbsEatr - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.1.0
+ * Version 1.2.0
 ### 
 (($, window, document, undefined_) ->
     "use strict"
 
-    pluginName = 'ezBreadcrumbs'
+    pluginName = 'breadcrumbsEatr'
     defaults =
         activeClass:            'active'
         debounceResize:
@@ -21,7 +21,7 @@
             hoverClass: "#{ pluginName.toLowerCase() }-holder-hovered"
             listClass:  "#{ pluginName.toLowerCase() }-hidden-list"
             text:       '...'
-        holderAnimation:
+        dropdownAnimation:
             showEasing:   'swing'
             hideEasing:   'swing'
             showDuration: 400
@@ -47,7 +47,7 @@
         onAfterLoad:            (obj) ->
         onDestroy:              (obj) ->
 
-    EzBreadcrumbs = (el, options) ->
+    BreadcrumbsEatr = (el, options) ->
         o         = ($ el).data '_obj', {}
         _this     = this
         metadata  = ($ el).data "#{ pluginName.toLowerCase() }-options"
@@ -223,6 +223,9 @@
                         if typeof width isnt "undefined" and (childrenWidth + width) <= current.width()
                             releaseItems.unshift(crumb.detach().get(0))
 
+                            # delete the reference since it does not correctly point it anymore the element
+                            crumb = null
+
                             childrenWidth += width
                         else
                             return false
@@ -262,49 +265,54 @@
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-            # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
-                o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
+            # bind custom event named show to open or show the dropdown
+            o.dropdownWrapper.on "show.#{ pluginName }", ->
+                o.opts.dropdownAnimation.onBeforeShow(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeShow)
 
-                # add the hover class to the holder element
-                ($ this).addClass o.opts.holder.hoverClass
-
-                o.dropdownWrapper
+                ($ this)
                     .stop(true, true)
                     .fadeIn
-                        duration: o.opts.holderAnimation.showDuration
-                        easing:   o.opts.holderAnimation.showEasing
+                        duration: o.opts.dropdownAnimation.showDuration
+                        easing:   o.opts.dropdownAnimation.showEasing
                         complete: ->
-                            o.opts.holderAnimation.onShow(_this) if $.isFunction(o.opts.holderAnimation.onShow)
+                            o.opts.dropdownAnimation.onShow(_this) if $.isFunction(o.opts.dropdownAnimation.onShow)
 
-                            o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
+                            # add the hover class to the holder element
+                            o.el
+                                .children(".#{ o.opts.holder.klass }")
+                                .addClass o.opts.holder.hoverClass
 
-                e.preventDefault()
+                            o.opts.dropdownAnimation.onAfterShow(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterShow)
 
-            # delegate the click event for preventing default behavior
-            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.klass } a", (e) ->
-                e.preventDefault()
-
-            # bind custom event named close to close or hide the dropdown
+            # bind custom event named hide to close or hide the dropdown
             o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
-                current = $ this
+                o.opts.dropdownAnimation.onBeforeHide(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeHide)
 
-                o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
-
-                current
+                ($ this)
                     .stop(true, true)
                     .fadeOut
-                        duration: o.opts.holderAnimation.hideDuration
-                        easing:   o.opts.holderAnimation.hideEasing
+                        duration: o.opts.dropdownAnimation.hideDuration
+                        easing:   o.opts.dropdownAnimation.hideEasing
                         complete: ->
-                            o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+                            o.opts.dropdownAnimation.onHide(_this) if $.isFunction(o.opts.dropdownAnimation.onHide)
 
                             # remove the hover class to the holder element
                             o.el
                                 .children(".#{ o.opts.holder.klass }")
                                 .removeClass o.opts.holder.hoverClass
 
-                            o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                            o.opts.dropdownAnimation.onAfterHide(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterHide)
+
+            # delegate the normalized event for hoverIn to the holder element
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
+                # trigger the custom event named show on the dropdownWrapper element
+                o.dropdownWrapper.trigger "show.#{ pluginName }"
+
+                e.preventDefault()
+
+            # delegate the click event for preventing default behavior
+            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.klass } a", (e) ->
+                e.preventDefault()
 
             # delegate events for non-touch devices
             unless Modernizr.touch
@@ -329,7 +337,8 @@
 
                     if (not target.is(".#{ o.opts.holder.klass }") and not target.is("##{ wrapperId }")) and
                         (target.parents(".#{ o.opts.holder.klass }").length is 0 and target.parents("##{ wrapperId }").length is 0)
-                            o.dropdownWrapper.trigger("hide.#{ pluginName }") 
+                            # trigger the custom event named hide on the dropdownWrapper element
+                            o.dropdownWrapper.trigger "hide.#{ pluginName }"
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
@@ -415,7 +424,7 @@
             return totalWidth
 
         o.generateRandomKey = ->
-            return "ezB_#{ Math.random().toString(36).substring(7) }"
+            return "bcE_#{ Math.random().toString(36).substring(7) }"
 
         o.setState = (state) ->
             o.state = state
@@ -465,6 +474,6 @@
 
     $.fn[pluginName] = (options) ->
         @each ->
-            $.data this, pluginName, new EzBreadcrumbs(this, options) unless $.data(this, pluginName)
+            $.data this, pluginName, new BreadcrumbsEatr(this, options) unless $.data(this, pluginName)
 
 ) jQuery, window, document

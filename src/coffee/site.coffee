@@ -11,7 +11,7 @@
 
     ($ '#usage')
         .find('.breadcrumb')
-        .ezBreadcrumbs()
+        .breadcrumbsEatr()
 
     # always return null
     return null
