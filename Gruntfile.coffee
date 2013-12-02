@@ -6,22 +6,22 @@ module.exports = (grunt) ->
         coffee:
             common:
                 files:
-                    'assets/js/ezBreadcrumbs.js': 'src/coffee/ezBreadcrumbs.coffee'
+                    'assets/js/breadcrumbsEatr.js': 'src/coffee/breadcrumbsEatr.coffee'
                     'assets/js/site.js': 'src/coffee/site.coffee'
-                    'tests/js/ezBreadcrumbs-test.js': 'tests/coffee/ezBreadcrumbs-test.coffee'
+                    'tests/js/breadcrumbsEatr-test.js': 'tests/coffee/breadcrumbsEatr-test.coffee'
                 options:
                     bare: true
         less:
             common:
                 files:
                     'assets/css/site.css': 'src/less/site.less'
-                    'assets/css/ezBreadcrumbs.css': 'src/less/ezBreadcrumbs.less'
+                    'assets/css/breadcrumbsEatr.css': 'src/less/breadcrumbsEatr.less'
         watch:
             coffee:
-                files: ['src/coffee/site.coffee', 'src/coffee/ezBreadcrumbs.coffee', 'tests/coffee/ezBreadcrumbs-test.coffee']
+                files: ['src/coffee/site.coffee', 'src/coffee/breadcrumbsEatr.coffee', 'tests/coffee/breadcrumbsEatr-test.coffee']
                 tasks: ['coffee']
             less:
-                files: ['src/less/site.less', 'src/less/ezBreadcrumbs.less']
+                files: ['src/less/site.less', 'src/less/breadcrumbsEatr.less']
                 tasks: ['less']
         concat:
             rwd:
@@ -38,7 +38,7 @@ module.exports = (grunt) ->
             options:
                 enabled: true
                 max_jshint_notifications: 5
-                title: "ezBreadcrumbs"
+                title: "breadcrumbsEatr"
 
     # Load the plugin that provides the "coffee", "less", "watch" task.
     grunt.loadNpmTasks 'grunt-contrib-coffee'
