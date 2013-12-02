@@ -277,6 +277,11 @@
                         complete: ->
                             o.opts.dropdownAnimation.onShow(_this) if $.isFunction(o.opts.dropdownAnimation.onShow)
 
+                            # add the hover class to the holder element
+                            o.el
+                                .children(".#{ o.opts.holder.klass }")
+                                .addClass o.opts.holder.hoverClass
+
                             o.opts.dropdownAnimation.onAfterShow(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterShow)
 
             # bind custom event named hide to close or hide the dropdown
@@ -300,11 +305,6 @@
 
             # delegate the normalized event for hoverIn to the holder element
             o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
-                o.opts.dropdownAnimation.onBeforeShow(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeShow)
-
-                # add the hover class to the holder element
-                ($ this).addClass o.opts.holder.hoverClass
-
                 # trigger the custom event named show on the dropdownWrapper element
                 o.dropdownWrapper.trigger "show.#{ pluginName }"
 
