@@ -21,7 +21,7 @@
             hoverClass: "#{ pluginName.toLowerCase() }-holder-hovered"
             listClass:  "#{ pluginName.toLowerCase() }-hidden-list"
             text:       '...'
-        holderAnimation:
+        dropdownAnimation:
             showEasing:   'swing'
             hideEasing:   'swing'
             showDuration: 400
@@ -267,7 +267,7 @@
 
             # delegate the normalized event for hoverIn to the holder element
             o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
-                o.opts.holderAnimation.onBeforeShow(_this) if $.isFunction(o.opts.holderAnimation.onBeforeShow)
+                o.opts.dropdownAnimation.onBeforeShow(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeShow)
 
                 # add the hover class to the holder element
                 ($ this).addClass o.opts.holder.hoverClass
@@ -275,12 +275,12 @@
                 o.dropdownWrapper
                     .stop(true, true)
                     .fadeIn
-                        duration: o.opts.holderAnimation.showDuration
-                        easing:   o.opts.holderAnimation.showEasing
+                        duration: o.opts.dropdownAnimation.showDuration
+                        easing:   o.opts.dropdownAnimation.showEasing
                         complete: ->
-                            o.opts.holderAnimation.onShow(_this) if $.isFunction(o.opts.holderAnimation.onShow)
+                            o.opts.dropdownAnimation.onShow(_this) if $.isFunction(o.opts.dropdownAnimation.onShow)
 
-                            o.opts.holderAnimation.onAfterShow(_this) if $.isFunction(o.opts.holderAnimation.onAfterShow)
+                            o.opts.dropdownAnimation.onAfterShow(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterShow)
 
                 e.preventDefault()
 
@@ -292,22 +292,22 @@
             o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
                 current = $ this
 
-                o.opts.holderAnimation.onBeforeHide(_this) if $.isFunction(o.opts.holderAnimation.onBeforeHide)
+                o.opts.dropdownAnimation.onBeforeHide(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeHide)
 
                 current
                     .stop(true, true)
                     .fadeOut
-                        duration: o.opts.holderAnimation.hideDuration
-                        easing:   o.opts.holderAnimation.hideEasing
+                        duration: o.opts.dropdownAnimation.hideDuration
+                        easing:   o.opts.dropdownAnimation.hideEasing
                         complete: ->
-                            o.opts.holderAnimation.onHide(_this) if $.isFunction(o.opts.holderAnimation.onHide)
+                            o.opts.dropdownAnimation.onHide(_this) if $.isFunction(o.opts.dropdownAnimation.onHide)
 
                             # remove the hover class to the holder element
                             o.el
                                 .children(".#{ o.opts.holder.klass }")
                                 .removeClass o.opts.holder.hoverClass
 
-                            o.opts.holderAnimation.onAfterHide(_this) if $.isFunction(o.opts.holderAnimation.onAfterHide)
+                            o.opts.dropdownAnimation.onAfterHide(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterHide)
 
             # delegate events for non-touch devices
             unless Modernizr.touch
