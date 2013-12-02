@@ -265,14 +265,11 @@
                         # trigger the afterDecompress callback
                         o.opts.onAfterDecompress(_this) if $.isFunction(o.opts.onAfterDecompress)
 
-            # delegate the normalized event for hoverIn to the holder element
-            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
+            # bind custom event named show to open or show the dropdown
+            o.dropdownWrapper.on "show.#{ pluginName }", ->
                 o.opts.dropdownAnimation.onBeforeShow(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeShow)
 
-                # add the hover class to the holder element
-                ($ this).addClass o.opts.holder.hoverClass
-
-                o.dropdownWrapper
+                ($ this)
                     .stop(true, true)
                     .fadeIn
                         duration: o.opts.dropdownAnimation.showDuration
@@ -282,13 +279,7 @@
 
                             o.opts.dropdownAnimation.onAfterShow(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterShow)
 
-                e.preventDefault()
-
-            # delegate the click event for preventing default behavior
-            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.klass } a", (e) ->
-                e.preventDefault()
-
-            # bind custom event named close to close or hide the dropdown
+            # bind custom event named hide to close or hide the dropdown
             o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
                 current = $ this
 
@@ -308,6 +299,22 @@
                                 .removeClass o.opts.holder.hoverClass
 
                             o.opts.dropdownAnimation.onAfterHide(_this) if $.isFunction(o.opts.dropdownAnimation.onAfterHide)
+
+            # delegate the normalized event for hoverIn to the holder element
+            o.el.on "#{ o.hoverIn }.#{ pluginName }", ".#{ o.opts.holder.klass }", (e) ->
+                o.opts.dropdownAnimation.onBeforeShow(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeShow)
+
+                # add the hover class to the holder element
+                ($ this).addClass o.opts.holder.hoverClass
+
+                # trigger the custom event named show on the dropdownWrapper element
+                o.dropdownWrapper.trigger "show.#{ pluginName }"
+
+                e.preventDefault()
+
+            # delegate the click event for preventing default behavior
+            o.el.on "#{ o.click }.#{ pluginName }", ".#{ o.opts.holder.klass } a", (e) ->
+                e.preventDefault()
 
             # delegate events for non-touch devices
             unless Modernizr.touch
@@ -332,7 +339,8 @@
 
                     if (not target.is(".#{ o.opts.holder.klass }") and not target.is("##{ wrapperId }")) and
                         (target.parents(".#{ o.opts.holder.klass }").length is 0 and target.parents("##{ wrapperId }").length is 0)
-                            o.dropdownWrapper.trigger("hide.#{ pluginName }") 
+                            # trigger the custom event named hide on the dropdownWrapper element
+                            o.dropdownWrapper.trigger "hide.#{ pluginName }"
 
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
