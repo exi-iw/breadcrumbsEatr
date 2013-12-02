@@ -1,5 +1,5 @@
 ###
- * EzBreadcrumbs - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
+ * BreadcrumbsEatr - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
  * Version 1.1.0
@@ -7,7 +7,7 @@
 (($, window, document, undefined_) ->
     "use strict"
 
-    pluginName = 'ezBreadcrumbs'
+    pluginName = 'breadcrumbsEatr'
     defaults =
         activeClass:            'active'
         debounceResize:
@@ -47,7 +47,7 @@
         onAfterLoad:            (obj) ->
         onDestroy:              (obj) ->
 
-    EzBreadcrumbs = (el, options) ->
+    BreadcrumbsEatr = (el, options) ->
         o         = ($ el).data '_obj', {}
         _this     = this
         metadata  = ($ el).data "#{ pluginName.toLowerCase() }-options"
@@ -424,7 +424,7 @@
             return totalWidth
 
         o.generateRandomKey = ->
-            return "ezB_#{ Math.random().toString(36).substring(7) }"
+            return "bcE_#{ Math.random().toString(36).substring(7) }"
 
         o.setState = (state) ->
             o.state = state
@@ -474,6 +474,6 @@
 
     $.fn[pluginName] = (options) ->
         @each ->
-            $.data this, pluginName, new EzBreadcrumbs(this, options) unless $.data(this, pluginName)
+            $.data this, pluginName, new BreadcrumbsEatr(this, options) unless $.data(this, pluginName)
 
 ) jQuery, window, document

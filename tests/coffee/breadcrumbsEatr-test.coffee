@@ -18,7 +18,7 @@
         status: (e) ->
             console.log "Test Element Width: #{ testElement.width() }. Element should wrap/unwrap on #{ maxWidth }"
 
-            testElementData = testElement.data 'ezBreadcrumbs'
+            testElementData = testElement.data 'breadcrumbsEatr'
 
             test "check breadcrumb status on width #{ testElement.width() }", ->
                 if testElement.width() < maxWidth
@@ -26,20 +26,20 @@
 
                     equal testElementData.getState(), 'compressed'
                     equal testElementData.isCompressed(), true
-                    equal testElement.hasClass('ezbreadcrumbs-wrapped'), true
+                    equal testElement.hasClass('breadcrumbseatr-wrapped'), true
                 else
                     console.log "testing on window size greater than #{ maxWidth }."
 
                     equal testElementData.getState(), 'decompressed'
                     equal testElementData.isCompressed(), false
-                    equal testElement.hasClass('ezbreadcrumbs-wrapped'), false
+                    equal testElement.hasClass('breadcrumbseatr-wrapped'), false
 
             console.log '-----------------'
 
         bodyHidden: ->
             console.log 'body is hidden test'
 
-            smartCompressionData = smartCompression.data 'ezBreadcrumbs'
+            smartCompressionData = smartCompression.data 'breadcrumbsEatr'
 
             test 'check if breadcrumb is compressed when the body is hidden', ->
                 equal smartCompressionData.getState(), 'decompressed'
@@ -47,7 +47,7 @@
         bodyShown: ->
             console.log 'body is revealed test'
 
-            smartCompressionData = smartCompression.data 'ezBreadcrumbs'
+            smartCompressionData = smartCompression.data 'breadcrumbsEatr'
 
             test 'check if breadcrumb is compressed after the body is revealed', ->
                 equal smartCompressionData.getState(), 'compressed'
@@ -74,7 +74,7 @@
         _.each crumbWidths, (v) ->
             maxWidth += v
 
-        testElement.ezBreadcrumbs()
+        testElement.breadcrumbsEatr()
 
         optimalCrumbHeight = _.max crumbHeights
 
@@ -90,7 +90,7 @@
         else 
             body.hide()
 
-            smartCompression.ezBreadcrumbs()
+            smartCompression.breadcrumbsEatr()
 
             testsFn.bodyHidden()
 
