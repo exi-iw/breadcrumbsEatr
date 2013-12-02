@@ -281,11 +281,9 @@
 
             # bind custom event named hide to close or hide the dropdown
             o.dropdownWrapper.on "hide.#{ pluginName }", (e) ->
-                current = $ this
-
                 o.opts.dropdownAnimation.onBeforeHide(_this) if $.isFunction(o.opts.dropdownAnimation.onBeforeHide)
 
-                current
+                ($ this)
                     .stop(true, true)
                     .fadeOut
                         duration: o.opts.dropdownAnimation.hideDuration
