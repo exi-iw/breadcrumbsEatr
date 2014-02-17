@@ -355,10 +355,26 @@
 
             # bind resize utility logic to the resize event of the window object
             o.browserWindow.on o.resizeUtilKey, ->
+                window.clearTimeout(o.resizeTimeout) if typeof o.resizeTimeout isnt "undefined"
+
+                # trigger the resize start only once
                 unless o.resizeStarted
                     o.resizeStarted = true
 
+                    o.throttledUpdate = _.throttle o.resizeUpdate, 60
+
                     o.resizeStart()
+
+                # call throttled o.resizeUpdate function
+                o.throttledUpdate() if typeof o.throttledUpdate isnt "undefined"
+
+                o.resizeTimeout = window.setTimeout(->
+                    o.resizeStarted = false if o.resizeStarted
+
+                    o.throttledUpdate = null if typeof o.throttledUpdate isnt "undefined"
+
+                    o.resizeComplete()
+                , 120)
 
             # create deferred for triggering onAfterLoad callback
             afterLoadDfd = new $.Deferred()
