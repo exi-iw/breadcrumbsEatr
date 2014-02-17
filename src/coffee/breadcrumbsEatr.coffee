@@ -424,6 +424,15 @@
 
             return null
 
+        o.resizeStart = ->
+            o.opts.onResizeStart(_this) if $.isFunction(o.opts.onResizeStart)
+
+        o.resizeUpdate = ->
+            o.opts.onResizeUpdate(_this) if $.isFunction(o.opts.onResizeUpdate)
+
+        o.resizeComplete = ->
+            o.opts.onResizeComplete(_this) if $.isFunction(o.opts.onResizeComplete)
+
         o.isParentsHidden = ->
             o.hiddenParents = if typeof o.hiddenParents is "undefined" then o.el.parentsUntil('body', ':hidden') else o.hiddenParents.filter(':hidden')
 
