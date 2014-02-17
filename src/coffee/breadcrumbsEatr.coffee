@@ -453,7 +453,7 @@
             o.documentBody.off ".#{ pluginName }"
 
             # remove any events attached to window object
-            ($ window).off ".#{ pluginName }"
+            browserWindow.off ".#{ pluginName }"
 
             # Remove Plugin Data
             o.el.removeData pluginName
