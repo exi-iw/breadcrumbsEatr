@@ -2,7 +2,7 @@
  * BreadcrumbsEatr - jQuery plugin that transforms a breadcrumbs to a responsive one. Useful when making responsive websites.
  * Copyright(c) Exequiel Ceasar Navarrete <exequiel.navarrete@ninthdesign.com>
  * Licensed under MIT
- * Version 1.2.0
+ * Version 1.2.1
 ### 
 (($, window, document, undefined_) ->
     "use strict"
@@ -42,6 +42,9 @@
         onBeforeDecompress:     (obj) ->
         onDecompress:           (obj) ->
         onAfterDecompress:      (obj) ->
+        onResizeStart:          (obj) ->
+        onResizeUpdate:         (obj) ->
+        onResizeComplete:       (obj) ->
         onBeforeLoad:           (obj) ->
         onLoad:                 (obj) ->
         onAfterLoad:            (obj) ->
@@ -87,12 +90,17 @@
         o.init = ->
             # check if underscore.js is required.
             if typeof window._ is "undefined"
-                o.error 'underscore.js is required.'
+                o.debug 'underscore.js is required.'
 
                 return false
 
             if typeof window.Modernizr is "undefined"
-                o.error 'Modernizr is required.'
+                o.debug 'Modernizr is required.'
+
+                return false
+
+            if ($ el).children('li').length <= 2
+                o.debug 'Breadcrumbs should have at least 3 crumbs or more!'
 
                 return false
 
@@ -109,6 +117,7 @@
             o.windowWidth   = o.browserWindow.width()
             o.unwrapWidth   = o.getChildrenWidth()   # unwrapped width for the breadcrumbs
             o.documentBody  = $ document.body
+            o.resizeStarted = false
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
@@ -116,7 +125,8 @@
             o.pluginKey = o.generateRandomKey()
 
             # generate random key for resize event to prevent event namespace conflicts
-            o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
+            o.resizeKey     = "resize.#{ pluginName }_#{ o.pluginKey }"
+            o.resizeUtilKey = "resize.#{ pluginName }_#{ o.generateRandomKey() }"
             # plugin keys ::end
 
             # normalize events ::start
@@ -254,7 +264,7 @@
                             holder = null
 
                             # hide the dropdownWrapper if it is visible
-                            o.dropdownWrapper.hide() if not o.dropdownWrapper.is(':hidden')
+                            o.dropdownWrapper.hide() unless o.dropdownWrapper.is(':hidden')
 
                             # remove wrapped class to the element if it exists
                             current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
@@ -340,18 +350,48 @@
                             # trigger the custom event named hide on the dropdownWrapper element
                             o.dropdownWrapper.trigger "hide.#{ pluginName }"
 
-            # bind resize event to the window
+            # bind main resize logic to the resize event of the window object
             o.browserWindow.on o.resizeKey, o.resize
 
+            # bind resize utility logic to the resize event of the window object
+            o.browserWindow.on o.resizeUtilKey, ->
+                window.clearTimeout(o.resizeTimeout) if typeof o.resizeTimeout isnt "undefined"
+
+                # trigger the resize start only once
+                unless o.resizeStarted
+                    o.resizeStarted = true
+
+                    o.throttledUpdate = _.throttle o.resizeUpdate, 60
+
+                    o.resizeStart()
+
+                # call throttled o.resizeUpdate function
+                o.throttledUpdate() if typeof o.throttledUpdate isnt "undefined"
+
+                o.resizeTimeout = window.setTimeout(->
+                    o.resizeStarted = false if o.resizeStarted
+
+                    o.throttledUpdate = null if typeof o.throttledUpdate isnt "undefined"
+
+                    o.resizeComplete()
+                , 120)
+
+            # create deferred for triggering onAfterLoad callback
+            afterLoadDfd = new $.Deferred()
+
             # execute custom code after the plugin has loaded
-            o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
+            afterLoadDfd.done ->
+                o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
             # initialize the compression timer variable
             o.smartCompressionTimer = null
 
             # trigger the resize event after the plugin has loaded and the element has no hidden parents
-            if not o.isParentsHidden()
+            unless o.isParentsHidden()
                 o.browserWindow.trigger o.resizeKey
+
+                # resolve the onAfterLoad deferred
+                afterLoadDfd.resolve()
             else
                 # check if the element's parents is not hidden anymore every 200ms
                 o.smartCompressionTimer = window.setInterval( ->
@@ -361,6 +401,9 @@
 
                         # trigger the resize event after the plugin has loaded and the element has no hidden parents
                         o.browserWindow.trigger o.resizeKey
+
+                        # resolve the onAfterLoad deferred
+                        afterLoadDfd.resolve()
 
                         # immediately set to null after clearing timer to prevent memory leaks
                         o.smartCompressionTimer = null
@@ -405,6 +448,15 @@
                 o.dropdownWrapper.css dropdownOffset
 
             return null
+
+        o.resizeStart = ->
+            o.opts.onResizeStart(_this) if $.isFunction(o.opts.onResizeStart)
+
+        o.resizeUpdate = ->
+            o.opts.onResizeUpdate(_this) if $.isFunction(o.opts.onResizeUpdate)
+
+        o.resizeComplete = ->
+            o.opts.onResizeComplete(_this) if $.isFunction(o.opts.onResizeComplete)
 
         o.isParentsHidden = ->
             o.hiddenParents = if typeof o.hiddenParents is "undefined" then o.el.parentsUntil('body', ':hidden') else o.hiddenParents.filter(':hidden')
@@ -453,7 +505,9 @@
             o.documentBody.off ".#{ pluginName }"
 
             # remove any events attached to window object
-            ($ window).off ".#{ pluginName }"
+            browserWindow
+                .off(o.resizeKey)
+                .off o.resizeUtilKey
 
             # Remove Plugin Data
             o.el.removeData pluginName
