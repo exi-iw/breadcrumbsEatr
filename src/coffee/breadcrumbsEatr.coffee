@@ -349,7 +349,7 @@
                             # trigger the custom event named hide on the dropdownWrapper element
                             o.dropdownWrapper.trigger "hide.#{ pluginName }"
 
-            # bind resize event to the window
+            # bind main resize logic to the resize event of the window object
             o.browserWindow.on o.resizeKey, o.resize
 
             # create deferred for triggering onAfterLoad callback
