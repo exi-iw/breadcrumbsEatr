@@ -254,7 +254,7 @@
                             holder = null
 
                             # hide the dropdownWrapper if it is visible
-                            o.dropdownWrapper.hide() if not o.dropdownWrapper.is(':hidden')
+                            o.dropdownWrapper.hide() unless o.dropdownWrapper.is(':hidden')
 
                             # remove wrapped class to the element if it exists
                             current.removeClass(o.opts.wrappedClass) if current.hasClass(o.opts.wrappedClass)
@@ -354,7 +354,7 @@
             o.smartCompressionTimer = null
 
             # trigger the resize event after the plugin has loaded and the element has no hidden parents
-            if not o.isParentsHidden()
+            unless o.isParentsHidden()
                 o.browserWindow.trigger o.resizeKey
 
                 # resolve the onAfterLoad deferred
