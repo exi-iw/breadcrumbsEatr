@@ -353,6 +353,13 @@
             # bind main resize logic to the resize event of the window object
             o.browserWindow.on o.resizeKey, o.resize
 
+            # bind resize utility logic to the resize event of the window object
+            o.browserWindow.on o.resizeUtilKey, ->
+                unless o.resizeStarted
+                    o.resizeStarted = true
+
+                    o.resizeStart()
+
             # create deferred for triggering onAfterLoad callback
             afterLoadDfd = new $.Deferred()
 
