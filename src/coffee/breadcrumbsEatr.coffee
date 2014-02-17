@@ -96,7 +96,7 @@
 
                 return false
 
-            if o.el.children('li').length <= 2
+            if ($ el).children('li').length <= 2
                 o.debug 'Breadcrumbs should have at least 3 crumbs or more!'
 
                 return false
