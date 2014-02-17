@@ -124,7 +124,8 @@
             o.pluginKey = o.generateRandomKey()
 
             # generate random key for resize event to prevent event namespace conflicts
-            o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
+            o.resizeKey     = "resize.#{ pluginName }_#{ o.pluginKey }"
+            o.resizeUtilKey = "resize.#{ pluginName }_#{ o.generateRandomKey() }"
             # plugin keys ::end
 
             # normalize events ::start
