@@ -42,6 +42,9 @@
         onBeforeDecompress:     (obj) ->
         onDecompress:           (obj) ->
         onAfterDecompress:      (obj) ->
+        onResizeStart:          (obj) ->
+        onResizeUpdate:         (obj) ->
+        onResizeComplete:       (obj) ->
         onBeforeLoad:           (obj) ->
         onLoad:                 (obj) ->
         onAfterLoad:            (obj) ->
