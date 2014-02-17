@@ -117,6 +117,7 @@
             o.windowWidth   = o.browserWindow.width()
             o.unwrapWidth   = o.getChildrenWidth()   # unwrapped width for the breadcrumbs
             o.documentBody  = $ document.body
+            o.resizeStarted = false
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
