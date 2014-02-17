@@ -42,6 +42,9 @@
         onBeforeDecompress:     (obj) ->
         onDecompress:           (obj) ->
         onAfterDecompress:      (obj) ->
+        onResizeStart:          (obj) ->
+        onResizeUpdate:         (obj) ->
+        onResizeComplete:       (obj) ->
         onBeforeLoad:           (obj) ->
         onLoad:                 (obj) ->
         onAfterLoad:            (obj) ->
@@ -114,6 +117,7 @@
             o.windowWidth   = o.browserWindow.width()
             o.unwrapWidth   = o.getChildrenWidth()   # unwrapped width for the breadcrumbs
             o.documentBody  = $ document.body
+            o.resizeStarted = false
 
             o.opts.onLoad(_this) if $.isFunction(o.opts.onLoad)
 
@@ -121,7 +125,8 @@
             o.pluginKey = o.generateRandomKey()
 
             # generate random key for resize event to prevent event namespace conflicts
-            o.resizeKey = "resize.#{ pluginName }_#{ o.pluginKey }"
+            o.resizeKey     = "resize.#{ pluginName }_#{ o.pluginKey }"
+            o.resizeUtilKey = "resize.#{ pluginName }_#{ o.generateRandomKey() }"
             # plugin keys ::end
 
             # normalize events ::start
@@ -345,8 +350,31 @@
                             # trigger the custom event named hide on the dropdownWrapper element
                             o.dropdownWrapper.trigger "hide.#{ pluginName }"
 
-            # bind resize event to the window
+            # bind main resize logic to the resize event of the window object
             o.browserWindow.on o.resizeKey, o.resize
+
+            # bind resize utility logic to the resize event of the window object
+            o.browserWindow.on o.resizeUtilKey, ->
+                window.clearTimeout(o.resizeTimeout) if typeof o.resizeTimeout isnt "undefined"
+
+                # trigger the resize start only once
+                unless o.resizeStarted
+                    o.resizeStarted = true
+
+                    o.throttledUpdate = _.throttle o.resizeUpdate, 60
+
+                    o.resizeStart()
+
+                # call throttled o.resizeUpdate function
+                o.throttledUpdate() if typeof o.throttledUpdate isnt "undefined"
+
+                o.resizeTimeout = window.setTimeout(->
+                    o.resizeStarted = false if o.resizeStarted
+
+                    o.throttledUpdate = null if typeof o.throttledUpdate isnt "undefined"
+
+                    o.resizeComplete()
+                , 120)
 
             # create deferred for triggering onAfterLoad callback
             afterLoadDfd = new $.Deferred()
@@ -420,6 +448,15 @@
                 o.dropdownWrapper.css dropdownOffset
 
             return null
+
+        o.resizeStart = ->
+            o.opts.onResizeStart(_this) if $.isFunction(o.opts.onResizeStart)
+
+        o.resizeUpdate = ->
+            o.opts.onResizeUpdate(_this) if $.isFunction(o.opts.onResizeUpdate)
+
+        o.resizeComplete = ->
+            o.opts.onResizeComplete(_this) if $.isFunction(o.opts.onResizeComplete)
 
         o.isParentsHidden = ->
             o.hiddenParents = if typeof o.hiddenParents is "undefined" then o.el.parentsUntil('body', ':hidden') else o.hiddenParents.filter(':hidden')
