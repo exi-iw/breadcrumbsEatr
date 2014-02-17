@@ -343,8 +343,12 @@
             # bind resize event to the window
             o.browserWindow.on o.resizeKey, o.resize
 
+            # create deferred for triggering onAfterLoad callback
+            afterLoadDfd = new $.Deferred()
+
             # execute custom code after the plugin has loaded
-            o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
+            afterLoadDfd.done ->
+                o.opts.onAfterLoad(_this) if $.isFunction(o.opts.onAfterLoad)
 
             # initialize the compression timer variable
             o.smartCompressionTimer = null
@@ -352,6 +356,9 @@
             # trigger the resize event after the plugin has loaded and the element has no hidden parents
             if not o.isParentsHidden()
                 o.browserWindow.trigger o.resizeKey
+
+                # resolve the onAfterLoad deferred
+                afterLoadDfd.resolve()
             else
                 # check if the element's parents is not hidden anymore every 200ms
                 o.smartCompressionTimer = window.setInterval( ->
@@ -361,6 +368,9 @@
 
                         # trigger the resize event after the plugin has loaded and the element has no hidden parents
                         o.browserWindow.trigger o.resizeKey
+
+                        # resolve the onAfterLoad deferred
+                        afterLoadDfd.resolve()
 
                         # immediately set to null after clearing timer to prevent memory leaks
                         o.smartCompressionTimer = null
