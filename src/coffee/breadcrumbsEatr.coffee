@@ -87,12 +87,12 @@
         o.init = ->
             # check if underscore.js is required.
             if typeof window._ is "undefined"
-                o.error 'underscore.js is required.'
+                o.debug 'underscore.js is required.'
 
                 return false
 
             if typeof window.Modernizr is "undefined"
-                o.error 'Modernizr is required.'
+                o.debug 'Modernizr is required.'
 
                 return false
 
